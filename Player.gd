@@ -29,6 +29,13 @@ func _process(delta):
 	position += velocity * delta
 	position.x = clamp(position.x, 0, screen_size.x)
 	position.y = clamp(position.y, 0, screen_size.y)
+
+	if velocity.x != 0:
+		$AnimatedSprite.animation = "right" if velocity.x > 0 else "left"
+	elif velocity.y != 0:
+		$AnimatedSprite.animation = "down" if velocity.y > 0 else "up"
+		
+
 	
 
 
@@ -45,14 +52,14 @@ func _on_Player_area_exited(area):
 		var collision_shape = area.get_node("PlayAreaCollision")
 		var player = get_node("CollisionShape2D")
 		if velocity.x < 0:
-			position.x += collision_shape.shape.extents.x*2\
+			position.x += collision_shape.shape.extents.x*2 \
 			 + player.shape.radius*2*scale.x
 		if velocity.x > 0:
-			position.x -= collision_shape.shape.extents.x*2\
+			position.x -= collision_shape.shape.extents.x*2 \
 			 + player.shape.radius*2*scale.x
 		if velocity.y < 0:
-			position.y += collision_shape.shape.extents.y*2\
+			position.y += collision_shape.shape.extents.y*2 \
 			 + player.shape.radius*2*scale.y
 		if velocity.y > 0:
-			position.y -= collision_shape.shape.extents.y*2\
+			position.y -= collision_shape.shape.extents.y*2 \
 			 + player.shape.radius*2*scale.y
