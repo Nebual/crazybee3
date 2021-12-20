@@ -1,1 +1,4 @@
 exports/
+
+# if these files are missing, it'll trigger a reimport - which just takes a bit of time on initial clone. Lets skip!
+.import/
