@@ -12,7 +12,6 @@ var velocity = Vector2()  # The player's movement vector.
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	screen_size = get_viewport_rect().size
-	pass # Replace with function body.
 	
 func _process(delta):
 	if Input.is_action_pressed("ui_right"):
@@ -25,15 +24,29 @@ func _process(delta):
 		velocity = Vector2(0,-1)
 	if velocity.length() > 0:
 		velocity = velocity.normalized() * speed
-		$AnimatedSprite.play()
+		get_node("Sprite_Bee").play()
+		get_node("Shield/Sprite_Shield").play()
 	position += velocity * delta
 	position.x = clamp(position.x, 0, screen_size.x)
 	position.y = clamp(position.y, 0, screen_size.y)
+	
+	if Input.is_action_just_pressed("ui_cancel"):
+		get_node("Shield").visible = !get_node("Shield").visible
+		
+		if get_node("Shield").collision_layer == 0b100:		#Is Shield on Layer 3?
+			get_node("Shield").collision_layer = 0b000		#Then set to 0
+		else:
+			get_node("Shield").collision_layer = 0b100		#Else set to 3
+		
+		print("Collision Layer: ",get_node("Shield").collision_layer)
+		print("Is Visible: ",get_node("Shield").is_visible())
 
 	if velocity.x != 0:
-		$AnimatedSprite.animation = "right" if velocity.x > 0 else "left"
+		get_node("Sprite_Bee").animation = "right" if velocity.x > 0 else "left"
+		get_node("Shield/Sprite_Shield").animation = "right" if velocity.x > 0 else "left"
 	elif velocity.y != 0:
-		$AnimatedSprite.animation = "down" if velocity.y > 0 else "up"
+		get_node("Sprite_Bee").animation = "down" if velocity.y > 0 else "up"
+		get_node("Shield/Sprite_Shield").animation = "down" if velocity.y > 0 else "up"
 		
 
 	
