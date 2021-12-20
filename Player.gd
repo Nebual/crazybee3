@@ -42,7 +42,7 @@ func _process(delta):
 		print("Is Visible: ",get_node("Shield").is_visible())
 
 	if velocity.x != 0:
-		get_node("Sprite_Bee").animation = "right" if velocity.x > 0 else "left"
+		(get_node("Sprite_Bee") as AnimatedSprite).animation = "right" if velocity.x > 0 else "left"
 		get_node("Shield/Sprite_Shield").animation = "right" if velocity.x > 0 else "left"
 	elif velocity.y != 0:
 		get_node("Sprite_Bee").animation = "down" if velocity.y > 0 else "up"
