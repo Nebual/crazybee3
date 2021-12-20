@@ -5,10 +5,25 @@ export var pickup_type = PickupTypes.SCORE
 
 var enemy = preload("res://Enemy.tscn")
 
+var sprite: AnimatedSprite
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	pass # Replace with function body.
+	sprite = get_node("AnimatedSprite")
+	reset()
 
+func reset():
+	sprite.animation = "flower" + str(randi() % 4)
+	sprite.frame = 0
+
+var timeObserved = 0
+func _process(delta):
+	timeObserved += delta
+	if timeObserved > 1:
+		timeObserved -= 1
+		# once a second:
+		if sprite.frame == 5:
+			sprite.frame = 4
 
 # eg. limit = 0.95 means you'll get a random number between -0.95 and 0.95
 func rand_signed_float(limit):
@@ -27,6 +42,7 @@ func get_random_pos_far_from_player(min_distance: int = 150):
 
 func relocate():
 	global_position = get_random_pos_far_from_player() # lets reuse this pickup instead of making a new one
+	reset()
 
 func spawn_enemy():
 	var new_enemy = enemy.instance()
