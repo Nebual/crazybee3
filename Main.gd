@@ -1,15 +1,12 @@
 extends Node2D
 
 var enemy = preload("res://Enemy.tscn")
-
-# Declare member variables here. Examples:
-# var a = 2
-# var b = "text"
-
+export var start_paused = true
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	pass # Replace with function body.
+	if start_paused:
+		get_tree().paused = true
 
 func _process(delta):
 	if Input.is_action_pressed("ui_accept"): #When you press Space or Enter

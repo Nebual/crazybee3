@@ -1,12 +1,12 @@
-[gd_scene load_steps=7 format=2]
+[gd_scene load_steps=8 format=2]
 
 [ext_resource path="res://Board.tscn" type="PackedScene" id=1]
 [ext_resource path="res://Player.tscn" type="PackedScene" id=2]
+[ext_resource path="res://ui/UITheme.tres" type="Theme" id=3]
 [ext_resource path="res://Enemy.tscn" type="PackedScene" id=4]
 [ext_resource path="res://Main.gd" type="Script" id=5]
+[ext_resource path="res://ui/GUI.gd" type="Script" id=7]
 [ext_resource path="res://Pickup.tscn" type="PackedScene" id=8]
-
-[sub_resource type="Theme" id=1]
 
 [node name="Main" type="Node2D"]
 script = ExtResource( 5 )
@@ -24,3 +24,62 @@ z_index = 1
 [node name="EnemyRigid" parent="." instance=ExtResource( 4 )]
 position = Vector2( 680, 469 )
 
+[node name="GUI" type="Node2D" parent="."]
+pause_mode = 2
+z_index = 20
+script = ExtResource( 7 )
+
+[node name="MarginContainer" type="MarginContainer" parent="GUI"]
+margin_left = 20.0
+margin_top = 30.0
+margin_right = 380.0
+margin_bottom = 401.0
+rect_min_size = Vector2( 360, 100 )
+theme = ExtResource( 3 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="VBoxContainer" type="VBoxContainer" parent="GUI/MarginContainer"]
+margin_right = 360.0
+margin_bottom = 371.0
+
+[node name="ScoreLine" type="HBoxContainer" parent="GUI/MarginContainer/VBoxContainer"]
+margin_right = 360.0
+margin_bottom = 55.0
+custom_constants/separation = 10
+
+[node name="Title" type="Label" parent="GUI/MarginContainer/VBoxContainer/ScoreLine"]
+margin_right = 156.0
+margin_bottom = 55.0
+text = "Score:"
+
+[node name="Amount" type="Label" parent="GUI/MarginContainer/VBoxContainer/ScoreLine"]
+margin_left = 166.0
+margin_right = 194.0
+margin_bottom = 55.0
+text = "0"
+
+[node name="VSplitContainer" type="VSplitContainer" parent="GUI/MarginContainer/VBoxContainer"]
+margin_top = 59.0
+margin_right = 360.0
+margin_bottom = 241.0
+size_flags_vertical = 3
+
+[node name="StartButton" type="Button" parent="GUI/MarginContainer/VBoxContainer"]
+margin_top = 245.0
+margin_right = 360.0
+margin_bottom = 306.0
+focus_mode = 0
+text = "Start"
+
+[node name="Pause" type="Button" parent="GUI/MarginContainer/VBoxContainer"]
+margin_top = 310.0
+margin_right = 360.0
+margin_bottom = 371.0
+focus_mode = 0
+text = "Pause"
+
+[connection signal="increment_score" from="Pickup" to="GUI" method="_on_Pickup_increment_score"]
+[connection signal="pressed" from="GUI/MarginContainer/VBoxContainer/StartButton" to="GUI" method="_on_StartButton_pressed"]
+[connection signal="pressed" from="GUI/MarginContainer/VBoxContainer/Pause" to="GUI" method="_on_PauseButton_pressed"]

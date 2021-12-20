@@ -3,6 +3,8 @@ extends Node2D
 enum PickupTypes {SCORE, BAD}
 export var pickup_type = PickupTypes.SCORE
 
+signal increment_score
+
 var enemy = preload("res://Enemy.tscn")
 
 var sprite: AnimatedSprite
@@ -51,7 +53,7 @@ func spawn_enemy():
 	get_node("/root/Main").add_child(new_enemy)
 
 func increment_score():
-	pass # todo
+	emit_signal("increment_score", 1)
 
 func _on_Pickup_area_entered(area):
 	if area.name != "Player": return # only Player collisions can activate pickups
