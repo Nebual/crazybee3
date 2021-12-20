@@ -4,14 +4,28 @@ export var speed = 400  # How fast the player will move (pixels/sec).
 var screen_size  # Size of the game window.
 var velocity = Vector2()  # The player's movement vector.
 
-# Declare member variables here. Examples:
-# var a = 2
-# var b = "text"
-
-
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	screen_size = get_viewport_rect().size
+
+func wrap_around_board():
+	var collision_shape: CollisionShape2D = get_node("/root/Main/Board/PlayArea/PlayAreaCollision")
+	var playAreaMins = collision_shape.global_position - collision_shape.shape.extents
+	var playAreaMaxs = collision_shape.global_position + collision_shape.shape.extents
+	var player = get_node("CollisionShape2D")
+	var playerSize = scale * player.shape.radius
+	if position.x + playerSize.x < playAreaMins.x:
+		#print("warp to right")
+		position.x += collision_shape.shape.extents.x*2 + playerSize.x*2
+	elif position.x - playerSize.x > playAreaMaxs.x:
+		#print("warp to left")
+		position.x -= collision_shape.shape.extents.x*2 + playerSize.x*2
+	if position.y + playerSize.y < playAreaMins.y:
+		#print("warp to bottom")
+		position.y += collision_shape.shape.extents.y*2 + playerSize.y*2
+	elif position.y - playerSize.y > playAreaMaxs.y:
+		#print("warp to top")
+		position.y -= collision_shape.shape.extents.y*2 + playerSize.y*2
 	
 func _process(delta):
 	if Input.is_action_pressed("ui_right"):
@@ -27,8 +41,7 @@ func _process(delta):
 		get_node("Sprite_Bee").play()
 		get_node("Shield/Sprite_Shield").play()
 	position += velocity * delta
-	position.x = clamp(position.x, 0, screen_size.x)
-	position.y = clamp(position.y, 0, screen_size.y)
+	wrap_around_board()
 	
 	if Input.is_action_just_pressed("ui_cancel"):
 		get_node("Shield").visible = !get_node("Shield").visible
@@ -48,31 +61,3 @@ func _process(delta):
 		get_node("Sprite_Bee").animation = "down" if velocity.y > 0 else "up"
 		get_node("Shield/Sprite_Shield").animation = "down" if velocity.y > 0 else "up"
 		
-
-	
-
-
-
-
-
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-#func _process(delta):
-#	pass
-
-
-func _on_Player_area_exited(area):
-	if area.name == "PlayArea": # Bee has left the area
-		var collision_shape = area.get_node("PlayAreaCollision")
-		var player = get_node("CollisionShape2D")
-		if velocity.x < 0:
-			position.x += collision_shape.shape.extents.x*2 \
-			 + player.shape.radius*2*scale.x
-		if velocity.x > 0:
-			position.x -= collision_shape.shape.extents.x*2 \
-			 + player.shape.radius*2*scale.x
-		if velocity.y < 0:
-			position.y += collision_shape.shape.extents.y*2 \
-			 + player.shape.radius*2*scale.y
-		if velocity.y > 0:
-			position.y -= collision_shape.shape.extents.y*2 \
-			 + player.shape.radius*2*scale.y
