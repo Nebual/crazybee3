@@ -1,0 +1,15 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+path="res://.import/murloc.mp3-7967848a009ac06f3125e3bdf8c7b0a9.mp3str"
+
+[deps]
+
+source_file="res://music/murloc.mp3"
+dest_files=[ "res://.import/murloc.mp3-7967848a009ac06f3125e3bdf8c7b0a9.mp3str" ]
+
+[params]
+
+loop=true
+loop_offset=0

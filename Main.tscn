@@ -204,6 +204,10 @@ margin_bottom = 371.0
 focus_mode = 0
 text = "Pause"
 
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource( 10 )
+autoplay = true
+
 [connection signal="body_entered" from="Player" to="Player" method="_on_Player_body_entered"]
 [connection signal="bombs_changed" from="Player" to="GUI" method="_on_Player_bombs_changed"]
 [connection signal="health_changed" from="Player" to="GUI" method="_on_Player_health_changed"]

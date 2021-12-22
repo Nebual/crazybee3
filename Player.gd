@@ -11,9 +11,12 @@ var velocity = Vector2()  # The player's movement vector.
 var pickup_scene = preload("res://Pickup.tscn")
 var bomb_scene = preload("res://Bomb.tscn")
 
+var sound_player : AudioStreamPlayer
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	screen_size = get_viewport_rect().size
+	sound_player = $"SoundPlayer"
 
 func wrap_around_board():
 	var collision_shape: CollisionShape2D = get_node("/root/Main/Board/PlayArea/PlayAreaCollision")
@@ -89,8 +92,14 @@ func adjust_bombs(amount: int):
 	bombs = clamp(bombs + amount, 0, 5)
 	emit_signal("bombs_changed", bombs)
 
+
+var death_sound = preload("res://music/death.tres")
+var hurt_sound = preload("res://music/murloc.tres")
+
 func death():
 	adjust_health(-health)
+	sound_player.stream = death_sound
+	sound_player.play()
 	
 	var sprite = $"Sprite_Bee"
 	sprite.animation = "idle"
@@ -104,3 +113,6 @@ func _on_Player_body_entered(body):
 		(body as RigidBody2D).queue_free()
 		if health == 0:
 			death()
+		else:
+			sound_player.stream = hurt_sound
+			sound_player.play(0.4)

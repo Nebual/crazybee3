@@ -1,0 +1,15 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+path="res://.import/getting_over_it.mp3-d44c0c8b2d4b8e045276fb48c0e3deb3.mp3str"
+
+[deps]
+
+source_file="res://music/getting_over_it.mp3"
+dest_files=[ "res://.import/getting_over_it.mp3-d44c0c8b2d4b8e045276fb48c0e3deb3.mp3str" ]
+
+[params]
+
+loop=true
+loop_offset=0
