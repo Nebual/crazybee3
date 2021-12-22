@@ -1,12 +1,61 @@
-[gd_scene load_steps=8 format=2]
+[gd_scene load_steps=19 format=2]
 
 [ext_resource path="res://Board.tscn" type="PackedScene" id=1]
 [ext_resource path="res://Player.tscn" type="PackedScene" id=2]
 [ext_resource path="res://ui/UITheme.tres" type="Theme" id=3]
 [ext_resource path="res://Enemy.tscn" type="PackedScene" id=4]
 [ext_resource path="res://Main.gd" type="Script" id=5]
+[ext_resource path="res://sprites/bee_idle.png" type="Texture" id=6]
 [ext_resource path="res://ui/GUI.gd" type="Script" id=7]
 [ext_resource path="res://Pickup.tscn" type="PackedScene" id=8]
+[ext_resource path="res://sprites/bomb.png" type="Texture" id=9]
+[ext_resource path="res://music/getting_over_it.mp3" type="AudioStream" id=10]
+
+[sub_resource type="AtlasTexture" id=1]
+flags = 4
+atlas = ExtResource( 6 )
+region = Rect2( 0, 0, 48, 48 )
+
+[sub_resource type="AtlasTexture" id=2]
+flags = 4
+atlas = ExtResource( 6 )
+region = Rect2( 48, 0, 48, 48 )
+
+[sub_resource type="SpriteFrames" id=3]
+animations = [ {
+"frames": [ SubResource( 1 ), SubResource( 2 ) ],
+"loop": true,
+"name": "default",
+"speed": 5.0
+} ]
+
+[sub_resource type="AtlasTexture" id=4]
+flags = 4
+atlas = ExtResource( 9 )
+region = Rect2( 0, 0, 64, 64 )
+
+[sub_resource type="AtlasTexture" id=5]
+flags = 4
+atlas = ExtResource( 9 )
+region = Rect2( 64, 0, 64, 64 )
+
+[sub_resource type="AtlasTexture" id=6]
+flags = 4
+atlas = ExtResource( 9 )
+region = Rect2( 128, 0, 64, 64 )
+
+[sub_resource type="AtlasTexture" id=7]
+flags = 4
+atlas = ExtResource( 9 )
+region = Rect2( 64, 0, 64, 64 )
+
+[sub_resource type="SpriteFrames" id=8]
+animations = [ {
+"frames": [ SubResource( 4 ), SubResource( 5 ), SubResource( 6 ), SubResource( 7 ) ],
+"loop": true,
+"name": "default",
+"speed": 5.0
+} ]
 
 [node name="Main" type="Node2D"]
 script = ExtResource( 5 )
@@ -15,7 +64,7 @@ script = ExtResource( 5 )
 
 [node name="Player" parent="." instance=ExtResource( 2 )]
 position = Vector2( 800, 400 )
-collision_mask = 72
+collision_mask = 74
 
 [node name="Pickup" parent="." instance=ExtResource( 8 )]
 position = Vector2( 547, 660 )
@@ -46,42 +95,118 @@ margin_bottom = 371.0
 
 [node name="ScoreLine" type="HBoxContainer" parent="GUI/MarginContainer/VBoxContainer"]
 margin_right = 360.0
-margin_bottom = 49.0
+margin_bottom = 43.0
+rect_clip_content = true
 custom_constants/separation = 10
 alignment = 1
 
 [node name="Title" type="Label" parent="GUI/MarginContainer/VBoxContainer/ScoreLine"]
-margin_left = 7.0
-margin_right = 295.0
-margin_bottom = 49.0
+margin_left = 43.0
+margin_right = 265.0
+margin_bottom = 43.0
 text = "Score:"
 
 [node name="Amount" type="Label" parent="GUI/MarginContainer/VBoxContainer/ScoreLine"]
-margin_left = 305.0
-margin_right = 353.0
-margin_bottom = 49.0
+margin_left = 275.0
+margin_right = 317.0
+margin_bottom = 43.0
 text = "0"
 
-[node name="VSplitContainer" type="VSplitContainer" parent="GUI/MarginContainer/VBoxContainer"]
-margin_top = 53.0
+[node name="Health" type="HBoxContainer" parent="GUI/MarginContainer/VBoxContainer"]
+margin_top = 47.0
 margin_right = 360.0
-margin_bottom = 253.0
+margin_bottom = 95.0
+rect_min_size = Vector2( 0, 48 )
+
+[node name="Health1" type="AnimatedSprite" parent="GUI/MarginContainer/VBoxContainer/Health"]
+position = Vector2( 30, 30 )
+frames = SubResource( 3 )
+playing = true
+
+[node name="Health2" type="AnimatedSprite" parent="GUI/MarginContainer/VBoxContainer/Health"]
+position = Vector2( 78, 30 )
+frames = SubResource( 3 )
+playing = true
+
+[node name="Health3" type="AnimatedSprite" parent="GUI/MarginContainer/VBoxContainer/Health"]
+position = Vector2( 126, 30 )
+frames = SubResource( 3 )
+playing = true
+
+[node name="Health4" type="AnimatedSprite" parent="GUI/MarginContainer/VBoxContainer/Health"]
+visible = false
+position = Vector2( 174, 30 )
+frames = SubResource( 3 )
+playing = true
+
+[node name="Health5" type="AnimatedSprite" parent="GUI/MarginContainer/VBoxContainer/Health"]
+visible = false
+position = Vector2( 222, 30 )
+frames = SubResource( 3 )
+playing = true
+
+[node name="Bombs" type="HBoxContainer" parent="GUI/MarginContainer/VBoxContainer"]
+margin_top = 99.0
+margin_right = 360.0
+margin_bottom = 147.0
+rect_min_size = Vector2( 0, 48 )
+
+[node name="Bomb1" type="AnimatedSprite" parent="GUI/MarginContainer/VBoxContainer/Bombs"]
+position = Vector2( 30, 0 )
+frames = SubResource( 8 )
+frame = 3
+playing = true
+
+[node name="Bomb2" type="AnimatedSprite" parent="GUI/MarginContainer/VBoxContainer/Bombs"]
+position = Vector2( 78, 0 )
+frames = SubResource( 8 )
+frame = 3
+playing = true
+
+[node name="Bomb3" type="AnimatedSprite" parent="GUI/MarginContainer/VBoxContainer/Bombs"]
+visible = false
+position = Vector2( 126, 0 )
+frames = SubResource( 8 )
+frame = 3
+playing = true
+
+[node name="Bomb4" type="AnimatedSprite" parent="GUI/MarginContainer/VBoxContainer/Bombs"]
+visible = false
+position = Vector2( 174, 0 )
+frames = SubResource( 8 )
+frame = 2
+playing = true
+
+[node name="Bomb5" type="AnimatedSprite" parent="GUI/MarginContainer/VBoxContainer/Bombs"]
+visible = false
+position = Vector2( 222, 0 )
+frames = SubResource( 8 )
+frame = 1
+playing = true
+
+[node name="VSplitContainer" type="VSplitContainer" parent="GUI/MarginContainer/VBoxContainer"]
+margin_top = 151.0
+margin_right = 360.0
+margin_bottom = 265.0
 size_flags_vertical = 3
 
 [node name="StartButton" type="Button" parent="GUI/MarginContainer/VBoxContainer"]
-margin_top = 257.0
+margin_top = 269.0
 margin_right = 360.0
-margin_bottom = 312.0
+margin_bottom = 318.0
 focus_mode = 0
 text = "Start"
 
 [node name="Pause" type="Button" parent="GUI/MarginContainer/VBoxContainer"]
-margin_top = 316.0
+margin_top = 322.0
 margin_right = 360.0
 margin_bottom = 371.0
 focus_mode = 0
 text = "Pause"
 
+[connection signal="body_entered" from="Player" to="Player" method="_on_Player_body_entered"]
+[connection signal="bombs_changed" from="Player" to="GUI" method="_on_Player_bombs_changed"]
+[connection signal="health_changed" from="Player" to="GUI" method="_on_Player_health_changed"]
 [connection signal="increment_score" from="Pickup" to="GUI" method="_on_Pickup_increment_score"]
 [connection signal="pressed" from="GUI/MarginContainer/VBoxContainer/StartButton" to="GUI" method="_on_StartButton_pressed"]
 [connection signal="pressed" from="GUI/MarginContainer/VBoxContainer/Pause" to="GUI" method="_on_PauseButton_pressed"]

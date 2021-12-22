@@ -1,6 +1,6 @@
 extends Node2D
 
-enum PickupTypes {SCORE, BAD}
+enum PickupTypes {SCORE, HEALTH, BAD}
 export var pickup_type = PickupTypes.SCORE
 
 signal increment_score
@@ -22,7 +22,11 @@ func _ready():
 	reset()
 
 func reset():
-	anim_player.play("growing" + str(randi() % 4))
+	if pickup_type == PickupTypes.SCORE:
+		anim_player.play("growing" + str(randi() % 4))
+	if pickup_type == PickupTypes.HEALTH:
+		anim_player.play("candy" + str(randi() % 4))
+		position = get_random_pos_far_from_player()
 
 # eg. limit = 0.95 means you'll get a random number between -0.95 and 0.95
 func rand_signed_float(limit):
@@ -47,6 +51,13 @@ func spawn_enemy():
 	new_enemy.linear_velocity = Vector2(rand_signed_float(300), rand_signed_float(200))
 	main.add_child(new_enemy)
 
+func maybe_spawn_health(chance: float = 0.25):
+	if randf() < chance and len(get_tree().get_nodes_in_group("health_pickups")) < 1:
+		var health_pickup = duplicate()
+		health_pickup.pickup_type = PickupTypes.HEALTH
+		health_pickup.add_to_group("health_pickups")
+		main.add_child(health_pickup)
+
 func increment_score():
 	emit_signal("increment_score", 1)
 
@@ -57,4 +68,8 @@ func _on_Pickup_area_entered(area):
 		increment_score()
 		relocate()
 		spawn_enemy()
+		maybe_spawn_health()
+	elif pickup_type == PickupTypes.HEALTH:
+		area.adjust_health(1)
+		queue_free()
 	# queue_free() # destroy self

@@ -3,6 +3,7 @@
 [ext_resource path="res://ui/Adore64.ttf" type="DynamicFontData" id=1]
 
 [resource]
-size = 48
+size = 42
 use_filter = true
+extra_spacing_char = -6
 font_data = ExtResource( 1 )

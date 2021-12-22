@@ -1,8 +1,6 @@
-extends RigidBody2D
+extends AnimatedSprite
 
-export var damage = 1
-export var min_speed = 200
-export var max_speed = 400
+
 # Declare member variables here. Examples:
 # var a = 2
 # var b = "text"
@@ -10,10 +8,14 @@ export var max_speed = 400
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	add_to_group("bombable")
 	pass # Replace with function body.
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 #func _process(delta):
 #	pass
+
+
+func _on_Timer_timeout():
+	for ent in get_tree().get_nodes_in_group("bombable"):
+		ent.queue_free()
