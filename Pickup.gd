@@ -7,33 +7,28 @@ signal increment_score
 
 var enemy = preload("res://Enemy.tscn")
 
+var main : Node2D
 var sprite: AnimatedSprite
-
+var anim_player: AnimationPlayer
+var play_area : CollisionShape2D
+var player : Area2D
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	sprite = get_node("AnimatedSprite")
+	anim_player = get_node("AnimationPlayer")
+	main = get_node("/root/Main")
+	play_area = get_node("/root/Main/Board/PlayArea/PlayAreaCollision")
+	player = get_node("/root/Main/Player")
 	reset()
 
 func reset():
-	sprite.animation = "flower" + str(randi() % 4)
-	sprite.frame = 0
-
-var timeObserved = 0
-func _process(delta):
-	timeObserved += delta
-	if timeObserved > 1:
-		timeObserved -= 1
-		# once a second:
-		if sprite.frame == 6:
-			sprite.frame = 5
+	anim_player.play("growing" + str(randi() % 4))
 
 # eg. limit = 0.95 means you'll get a random number between -0.95 and 0.95
 func rand_signed_float(limit):
 	return (randf() * limit * 2) - limit
 	
 func get_random_pos_far_from_player(min_distance: int = 150):
-	var play_area : CollisionShape2D = get_node("/root/Main/Board/PlayArea/PlayAreaCollision")
-	var player : Area2D = get_node("/root/Main/Player")
 	var distance = 0
 	var new_pos
 	while distance < min_distance:
@@ -50,7 +45,7 @@ func spawn_enemy():
 	var new_enemy = enemy.instance()
 	new_enemy.position = get_random_pos_far_from_player()
 	new_enemy.linear_velocity = Vector2(rand_signed_float(300), rand_signed_float(200))
-	get_node("/root/Main").add_child(new_enemy)
+	main.add_child(new_enemy)
 
 func increment_score():
 	emit_signal("increment_score", 1)
