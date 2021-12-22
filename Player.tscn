@@ -247,7 +247,7 @@ gravity_scale = 0.0
 linear_damp = 0.0
 
 [node name="Sprite_Shield" type="AnimatedSprite" parent="Shield"]
-modulate = Color( 1, 0.494118, 0.321569, 0.576471 )
+modulate = Color( 0.501961, 0.917647, 1, 0.576471 )
 frames = SubResource( 47 )
 animation = "right"
 speed_scale = 2.0

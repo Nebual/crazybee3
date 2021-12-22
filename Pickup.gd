@@ -24,8 +24,8 @@ func _process(delta):
 	if timeObserved > 1:
 		timeObserved -= 1
 		# once a second:
-		if sprite.frame == 5:
-			sprite.frame = 4
+		if sprite.frame == 6:
+			sprite.frame = 5
 
 # eg. limit = 0.95 means you'll get a random number between -0.95 and 0.95
 func rand_signed_float(limit):
@@ -37,7 +37,7 @@ func get_random_pos_far_from_player(min_distance: int = 150):
 	var distance = 0
 	var new_pos
 	while distance < min_distance:
-		var offset = Vector2(rand_signed_float(0.95) * play_area.shape.extents.x, rand_signed_float(0.95) * play_area.shape.extents.y)
+		var offset = Vector2(rand_signed_float(0.8) * play_area.shape.extents.x, rand_signed_float(0.8) * play_area.shape.extents.y)
 		new_pos = play_area.global_position + offset
 		distance = player.global_position.distance_to(new_pos)
 	return new_pos
