@@ -1,6 +1,6 @@
 extends AnimatedSprite
 
-
+export var blast_radius = 500
 # Declare member variables here. Examples:
 # var a = 2
 # var b = "text"
@@ -18,4 +18,7 @@ func _ready():
 
 func _on_Timer_timeout():
 	for ent in get_tree().get_nodes_in_group("bombable"):
-		ent.queue_free()
+		if (ent as Node2D).position.distance_to(position) < blast_radius:
+			ent.queue_free()
+		elif "original_velocity" in ent:
+			ent.linear_velocity = ent.original_velocity

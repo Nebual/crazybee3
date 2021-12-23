@@ -103,17 +103,15 @@ tracks/3/loop_wrap = true
 tracks/3/imported = false
 tracks/3/enabled = true
 tracks/3/keys = {
-"times": PoolRealArray( 0, 1 ),
+"times": PoolRealArray( 0, 0.3 ),
 "transitions": PoolRealArray( 1, 1 ),
 "update": 1,
 "values": [ false, true ]
 }
 
 [node name="Bomb" type="AnimatedSprite"]
-visible = false
-scale = Vector2( 6, 6 )
+scale = Vector2( 3, 3 )
 frames = SubResource( 10 )
-frame = 12
 offset = Vector2( 0, -6 )
 script = ExtResource( 2 )
 

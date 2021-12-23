@@ -34,29 +34,28 @@ func rand_signed_float(limit):
 	
 func get_random_pos_far_from_player(min_distance: int = 150):
 	var distance = 0
-	var new_pos
+	var offset
 	while distance < min_distance:
-		var offset = Vector2(rand_signed_float(0.8) * play_area.shape.extents.x, rand_signed_float(0.8) * play_area.shape.extents.y)
-		new_pos = play_area.global_position + offset
-		distance = player.global_position.distance_to(new_pos)
-	return new_pos
+		offset = Vector2(rand_signed_float(0.8) * play_area.shape.extents.x, rand_signed_float(0.8) * play_area.shape.extents.y)
+		distance = (player.global_position - play_area.global_position).distance_to(offset)
+	return offset
 
 func relocate():
-	global_position = get_random_pos_far_from_player() # lets reuse this pickup instead of making a new one
+	position = get_random_pos_far_from_player() # lets reuse this pickup instead of making a new one
 	reset()
 
 func spawn_enemy():
 	var new_enemy = enemy.instance()
 	new_enemy.position = get_random_pos_far_from_player()
 	new_enemy.linear_velocity = Vector2(rand_signed_float(300), rand_signed_float(200))
-	main.add_child(new_enemy)
+	play_area.add_child(new_enemy)
 
 func maybe_spawn_health(chance: float = 0.25):
 	if randf() < chance and len(get_tree().get_nodes_in_group("health_pickups")) < 1:
 		var health_pickup = duplicate()
 		health_pickup.pickup_type = PickupTypes.HEALTH
 		health_pickup.add_to_group("health_pickups")
-		main.add_child(health_pickup)
+		play_area.add_child(health_pickup)
 
 func increment_score():
 	emit_signal("increment_score", 1)

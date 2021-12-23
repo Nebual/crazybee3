@@ -1,30 +1,31 @@
-[gd_scene load_steps=45 format=2]
+[gd_scene load_steps=50 format=2]
 
 [ext_resource path="res://sprites/bee_kat.png" type="Texture" id=1]
 [ext_resource path="res://Player.gd" type="Script" id=2]
 [ext_resource path="res://sprites/shield.png" type="Texture" id=3]
 [ext_resource path="res://sprites/bee_idle.png" type="Texture" id=4]
 [ext_resource path="res://music/death.tres" type="AudioStream" id=5]
+[ext_resource path="res://sprites/shadow.png" type="Texture" id=6]
 
-[sub_resource type="AtlasTexture" id=15]
+[sub_resource type="AtlasTexture" id=52]
 flags = 4
-atlas = ExtResource( 1 )
-region = Rect2( 0, 48, 48, 48 )
+atlas = ExtResource( 6 )
+region = Rect2( 0, 0, 48, 48 )
 
-[sub_resource type="AtlasTexture" id=16]
+[sub_resource type="AtlasTexture" id=53]
 flags = 4
-atlas = ExtResource( 1 )
-region = Rect2( 48, 48, 48, 48 )
+atlas = ExtResource( 6 )
+region = Rect2( 48, 0, 48, 48 )
 
-[sub_resource type="AtlasTexture" id=17]
-flags = 4
-atlas = ExtResource( 1 )
-region = Rect2( 96, 48, 48, 48 )
+[sub_resource type="SpriteFrames" id=54]
+animations = [ {
+"frames": [ SubResource( 52 ), SubResource( 53 ) ],
+"loop": true,
+"name": "shadow",
+"speed": 5.0
+} ]
 
-[sub_resource type="AtlasTexture" id=18]
-flags = 4
-atlas = ExtResource( 1 )
-region = Rect2( 48, 48, 48, 48 )
+[sub_resource type="CircleShape2D" id=55]
 
 [sub_resource type="AtlasTexture" id=19]
 flags = 4
@@ -45,6 +46,26 @@ region = Rect2( 96, 96, 48, 48 )
 flags = 4
 atlas = ExtResource( 1 )
 region = Rect2( 48, 96, 48, 48 )
+
+[sub_resource type="AtlasTexture" id=15]
+flags = 4
+atlas = ExtResource( 1 )
+region = Rect2( 0, 48, 48, 48 )
+
+[sub_resource type="AtlasTexture" id=16]
+flags = 4
+atlas = ExtResource( 1 )
+region = Rect2( 48, 48, 48, 48 )
+
+[sub_resource type="AtlasTexture" id=17]
+flags = 4
+atlas = ExtResource( 1 )
+region = Rect2( 96, 48, 48, 48 )
+
+[sub_resource type="AtlasTexture" id=18]
+flags = 4
+atlas = ExtResource( 1 )
+region = Rect2( 48, 48, 48, 48 )
 
 [sub_resource type="AtlasTexture" id=23]
 flags = 4
@@ -98,14 +119,14 @@ region = Rect2( 48, 0, 48, 48 )
 
 [sub_resource type="SpriteFrames" id=13]
 animations = [ {
-"frames": [ SubResource( 15 ), SubResource( 16 ), SubResource( 17 ), SubResource( 18 ) ],
-"loop": true,
-"name": "left",
-"speed": 5.0
-}, {
 "frames": [ SubResource( 19 ), SubResource( 20 ), SubResource( 21 ), SubResource( 22 ) ],
 "loop": true,
 "name": "right",
+"speed": 5.0
+}, {
+"frames": [ SubResource( 15 ), SubResource( 16 ), SubResource( 17 ), SubResource( 18 ) ],
+"loop": true,
+"name": "left",
 "speed": 5.0
 }, {
 "frames": [ SubResource( 23 ), SubResource( 24 ), SubResource( 25 ), SubResource( 26 ) ],
@@ -131,26 +152,6 @@ radius = 13.0
 friction = 0.0
 bounce = 1.0
 
-[sub_resource type="AtlasTexture" id=31]
-flags = 4
-atlas = ExtResource( 3 )
-region = Rect2( 0, 48, 48, 48 )
-
-[sub_resource type="AtlasTexture" id=32]
-flags = 4
-atlas = ExtResource( 3 )
-region = Rect2( 48, 48, 48, 48 )
-
-[sub_resource type="AtlasTexture" id=33]
-flags = 4
-atlas = ExtResource( 3 )
-region = Rect2( 96, 48, 48, 48 )
-
-[sub_resource type="AtlasTexture" id=34]
-flags = 4
-atlas = ExtResource( 3 )
-region = Rect2( 48, 48, 48, 48 )
-
 [sub_resource type="AtlasTexture" id=35]
 flags = 4
 atlas = ExtResource( 3 )
@@ -170,6 +171,26 @@ region = Rect2( 96, 96, 48, 48 )
 flags = 4
 atlas = ExtResource( 3 )
 region = Rect2( 48, 96, 48, 48 )
+
+[sub_resource type="AtlasTexture" id=31]
+flags = 4
+atlas = ExtResource( 3 )
+region = Rect2( 0, 48, 48, 48 )
+
+[sub_resource type="AtlasTexture" id=32]
+flags = 4
+atlas = ExtResource( 3 )
+region = Rect2( 48, 48, 48, 48 )
+
+[sub_resource type="AtlasTexture" id=33]
+flags = 4
+atlas = ExtResource( 3 )
+region = Rect2( 96, 48, 48, 48 )
+
+[sub_resource type="AtlasTexture" id=34]
+flags = 4
+atlas = ExtResource( 3 )
+region = Rect2( 48, 48, 48, 48 )
 
 [sub_resource type="AtlasTexture" id=39]
 flags = 4
@@ -213,14 +234,14 @@ region = Rect2( 48, 0, 48, 48 )
 
 [sub_resource type="SpriteFrames" id=47]
 animations = [ {
-"frames": [ SubResource( 31 ), SubResource( 32 ), SubResource( 33 ), SubResource( 34 ) ],
-"loop": true,
-"name": "left",
-"speed": 5.0
-}, {
 "frames": [ SubResource( 35 ), SubResource( 36 ), SubResource( 37 ), SubResource( 38 ) ],
 "loop": true,
 "name": "right",
+"speed": 5.0
+}, {
+"frames": [ SubResource( 31 ), SubResource( 32 ), SubResource( 33 ), SubResource( 34 ) ],
+"loop": true,
+"name": "left",
 "speed": 5.0
 }, {
 "frames": [ SubResource( 39 ), SubResource( 40 ), SubResource( 41 ), SubResource( 42 ) ],
@@ -246,6 +267,22 @@ __meta__ = {
 }
 speed = 300
 
+[node name="Shadow" type="RigidBody2D" parent="."]
+modulate = Color( 0.729412, 0.886275, 1, 0.403922 )
+position = Vector2( 0, 4 )
+mode = 1
+gravity_scale = 0.0
+
+[node name="AnimatedSprite" type="AnimatedSprite" parent="Shadow"]
+frames = SubResource( 54 )
+animation = "shadow"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Shadow"]
+position = Vector2( 0, 16 )
+scale = Vector2( 1.1, 0.4 )
+shape = SubResource( 55 )
+disabled = true
+
 [node name="Sprite_Bee" type="AnimatedSprite" parent="."]
 frames = SubResource( 13 )
 animation = "idle"
@@ -258,7 +295,8 @@ position = Vector2( 0, 2 )
 shape = SubResource( 14 )
 
 [node name="Shield" type="RigidBody2D" parent="."]
-collision_layer = 4
+visible = false
+collision_layer = 0
 collision_mask = 0
 mode = 1
 physics_material_override = SubResource( 49 )
@@ -279,4 +317,13 @@ one_way_collision_margin = 100.0
 [node name="SoundPlayer" type="AudioStreamPlayer" parent="."]
 stream = ExtResource( 5 )
 
+[node name="JumpTimer1" type="Timer" parent="."]
+wait_time = 0.05
+
+[node name="JumpTimer2" type="Timer" parent="."]
+wait_time = 0.4
+one_shot = true
+
 [connection signal="area_exited" from="." to="." method="_on_Player_area_exited"]
+[connection signal="timeout" from="JumpTimer1" to="." method="_on_JumpTimer1_timeout"]
+[connection signal="timeout" from="JumpTimer2" to="." method="_on_JumpTimer2_timeout"]

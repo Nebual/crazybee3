@@ -12,30 +12,33 @@ var pickup_scene = preload("res://Pickup.tscn")
 var bomb_scene = preload("res://Bomb.tscn")
 
 var sound_player : AudioStreamPlayer
+var play_area: Area2D
+var play_area_collision: CollisionShape2D
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	screen_size = get_viewport_rect().size
 	sound_player = $"SoundPlayer"
+	play_area = get_node("/root/Main/Board/PlayArea")
+	play_area_collision = get_node("/root/Main/Board/PlayArea/PlayAreaCollision")
 
 func wrap_around_board():
-	var collision_shape: CollisionShape2D = get_node("/root/Main/Board/PlayArea/PlayAreaCollision")
-	var playAreaMins = collision_shape.global_position - collision_shape.shape.extents
-	var playAreaMaxs = collision_shape.global_position + collision_shape.shape.extents
+	var playAreaMins = play_area_collision.global_position - play_area_collision.shape.extents
+	var playAreaMaxs = play_area_collision.global_position + play_area_collision.shape.extents
 	var player = get_node("CollisionShape2D")
 	var playerSize = scale * player.shape.radius
 	if position.x + playerSize.x < playAreaMins.x:
 		#print("warp to right")
-		position.x += collision_shape.shape.extents.x*2 + playerSize.x*2
+		position.x += play_area_collision.shape.extents.x*2 + playerSize.x*2
 	elif position.x - playerSize.x > playAreaMaxs.x:
 		#print("warp to left")
-		position.x -= collision_shape.shape.extents.x*2 + playerSize.x*2
+		position.x -= play_area_collision.shape.extents.x*2 + playerSize.x*2
 	if position.y + playerSize.y < playAreaMins.y:
 		#print("warp to bottom")
-		position.y += collision_shape.shape.extents.y*2 + playerSize.y*2
+		position.y += play_area_collision.shape.extents.y*2 + playerSize.y*2
 	elif position.y - playerSize.y > playAreaMaxs.y:
 		#print("warp to top")
-		position.y -= collision_shape.shape.extents.y*2 + playerSize.y*2
+		position.y -= play_area_collision.shape.extents.y*2 + playerSize.y*2
 	
 func _process(delta):
 	if health <= 0:
@@ -52,6 +55,7 @@ func _process(delta):
 		velocity = Vector2(0,-1)
 	if velocity.length() > 0:
 		velocity = velocity.normalized() * speed
+		get_node("Shadow/AnimatedSprite").play()
 		get_node("Sprite_Bee").play()
 		get_node("Shield/Sprite_Shield").play()
 	position += velocity * delta
@@ -68,11 +72,13 @@ func _process(delta):
 		print("Collision Layer: ",get_node("Shield").collision_layer)
 		print("Is Visible: ",get_node("Shield").is_visible())
 	
-	if Input.is_action_just_pressed("ui_accept") and bombs > 0:
+	if Input.is_action_just_pressed("ui_home") and bombs > 0:
 		adjust_bombs(-1)
 		var bomb = bomb_scene.instance()
-		bomb.position = position
-		$"../".add_child(bomb)
+		bomb.position = global_position - play_area.global_position
+		play_area.add_child(bomb)
+		for ent in get_tree().get_nodes_in_group("bombable"): #Slow all enemies after dropping bomb
+			ent.linear_velocity /= 4
 
 	if velocity.x != 0:
 		(get_node("Sprite_Bee") as AnimatedSprite).animation = "right" if velocity.x > 0 else "left"
@@ -83,6 +89,9 @@ func _process(delta):
 	
 	if Input.is_action_just_pressed("restart"):
 		death()
+		
+	if Input.is_action_just_pressed("ui_accept"):
+		jump()
 
 func adjust_health(amount: int):
 	health = clamp(health + amount, 0, 5)
@@ -95,6 +104,27 @@ func adjust_bombs(amount: int):
 
 var death_sound = preload("res://music/death.tres")
 var hurt_sound = preload("res://music/murloc.tres")
+var jump_state = ""
+
+func jump():
+	jump_state = "up"
+	$"JumpTimer1".start()
+	$"JumpTimer2".start()
+	
+func _on_JumpTimer1_timeout():
+	if jump_state == "up":
+		$"Sprite_Bee".scale += Vector2(0.03,0.03)
+		$"Sprite_Bee".position.y -= 4
+		$"Shadow/AnimatedSprite".scale -= Vector2(0.05,0.05)
+	elif jump_state == "down" and $"Sprite_Bee".scale > Vector2(1,1):
+		$"Sprite_Bee".scale -= Vector2(0.03,0.03)
+		$"Sprite_Bee".position.y += 4
+		$"Shadow/AnimatedSprite".scale += Vector2(0.05,0.05)
+	elif $"Sprite_Bee".scale <= Vector2(1,1):
+		$"Sprite_Bee".scale = Vector2(1,1)
+		jump_state = ""
+func _on_JumpTimer2_timeout():
+	jump_state = "down"
 
 func death():
 	adjust_health(-health)
@@ -104,9 +134,13 @@ func death():
 	var sprite = $"Sprite_Bee"
 	sprite.animation = "idle"
 	sprite.flip_v = true
+	get_node("Shadow/AnimatedSprite").stop()
+	get_node("Shadow/AnimatedSprite").position.y = -14 #Move shadow underneath our fallen hero
 
 func _on_Player_body_entered(body):
 	if health <= 0:
+		return
+	if jump_state != "":
 		return
 	if 'damage' in body: # hit a baddie
 		adjust_health(-body.damage)
@@ -116,3 +150,4 @@ func _on_Player_body_entered(body):
 		else:
 			sound_player.stream = hurt_sound
 			sound_player.play(0.4)
+

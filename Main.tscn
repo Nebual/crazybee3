@@ -1,13 +1,11 @@
-[gd_scene load_steps=19 format=2]
+[gd_scene load_steps=17 format=2]
 
 [ext_resource path="res://Board.tscn" type="PackedScene" id=1]
 [ext_resource path="res://Player.tscn" type="PackedScene" id=2]
 [ext_resource path="res://ui/UITheme.tres" type="Theme" id=3]
-[ext_resource path="res://Enemy.tscn" type="PackedScene" id=4]
 [ext_resource path="res://Main.gd" type="Script" id=5]
 [ext_resource path="res://sprites/bee_idle.png" type="Texture" id=6]
 [ext_resource path="res://ui/GUI.gd" type="Script" id=7]
-[ext_resource path="res://Pickup.tscn" type="PackedScene" id=8]
 [ext_resource path="res://sprites/bomb.png" type="Texture" id=9]
 [ext_resource path="res://music/getting_over_it.mp3" type="AudioStream" id=10]
 
@@ -66,13 +64,6 @@ script = ExtResource( 5 )
 position = Vector2( 800, 400 )
 collision_mask = 74
 
-[node name="Pickup" parent="." instance=ExtResource( 8 )]
-position = Vector2( 547, 660 )
-z_index = 1
-
-[node name="EnemyRigid" parent="." instance=ExtResource( 4 )]
-position = Vector2( 680, 469 )
-
 [node name="GUI" type="Node2D" parent="."]
 pause_mode = 2
 z_index = 20
@@ -121,28 +112,33 @@ rect_min_size = Vector2( 0, 48 )
 [node name="Health1" type="AnimatedSprite" parent="GUI/MarginContainer/VBoxContainer/Health"]
 position = Vector2( 30, 30 )
 frames = SubResource( 3 )
+frame = 1
 playing = true
 
 [node name="Health2" type="AnimatedSprite" parent="GUI/MarginContainer/VBoxContainer/Health"]
 position = Vector2( 78, 30 )
 frames = SubResource( 3 )
+frame = 1
 playing = true
 
 [node name="Health3" type="AnimatedSprite" parent="GUI/MarginContainer/VBoxContainer/Health"]
 position = Vector2( 126, 30 )
 frames = SubResource( 3 )
+frame = 1
 playing = true
 
 [node name="Health4" type="AnimatedSprite" parent="GUI/MarginContainer/VBoxContainer/Health"]
 visible = false
 position = Vector2( 174, 30 )
 frames = SubResource( 3 )
+frame = 1
 playing = true
 
 [node name="Health5" type="AnimatedSprite" parent="GUI/MarginContainer/VBoxContainer/Health"]
 visible = false
 position = Vector2( 222, 30 )
 frames = SubResource( 3 )
+frame = 1
 playing = true
 
 [node name="Bombs" type="HBoxContainer" parent="GUI/MarginContainer/VBoxContainer"]
@@ -154,34 +150,33 @@ rect_min_size = Vector2( 0, 48 )
 [node name="Bomb1" type="AnimatedSprite" parent="GUI/MarginContainer/VBoxContainer/Bombs"]
 position = Vector2( 30, 0 )
 frames = SubResource( 8 )
-frame = 3
+frame = 2
 playing = true
 
 [node name="Bomb2" type="AnimatedSprite" parent="GUI/MarginContainer/VBoxContainer/Bombs"]
 position = Vector2( 78, 0 )
 frames = SubResource( 8 )
-frame = 3
+frame = 2
 playing = true
 
 [node name="Bomb3" type="AnimatedSprite" parent="GUI/MarginContainer/VBoxContainer/Bombs"]
 visible = false
 position = Vector2( 126, 0 )
 frames = SubResource( 8 )
-frame = 3
+frame = 2
 playing = true
 
 [node name="Bomb4" type="AnimatedSprite" parent="GUI/MarginContainer/VBoxContainer/Bombs"]
 visible = false
 position = Vector2( 174, 0 )
 frames = SubResource( 8 )
-frame = 2
+frame = 1
 playing = true
 
 [node name="Bomb5" type="AnimatedSprite" parent="GUI/MarginContainer/VBoxContainer/Bombs"]
 visible = false
 position = Vector2( 222, 0 )
 frames = SubResource( 8 )
-frame = 1
 playing = true
 
 [node name="VSplitContainer" type="VSplitContainer" parent="GUI/MarginContainer/VBoxContainer"]
@@ -208,9 +203,11 @@ text = "Pause"
 stream = ExtResource( 10 )
 autoplay = true
 
+[connection signal="increment_score" from="Board/PlayArea/Pickup" to="GUI" method="_on_Pickup_increment_score"]
 [connection signal="body_entered" from="Player" to="Player" method="_on_Player_body_entered"]
 [connection signal="bombs_changed" from="Player" to="GUI" method="_on_Player_bombs_changed"]
 [connection signal="health_changed" from="Player" to="GUI" method="_on_Player_health_changed"]
-[connection signal="increment_score" from="Pickup" to="GUI" method="_on_Pickup_increment_score"]
 [connection signal="pressed" from="GUI/MarginContainer/VBoxContainer/StartButton" to="GUI" method="_on_StartButton_pressed"]
 [connection signal="pressed" from="GUI/MarginContainer/VBoxContainer/Pause" to="GUI" method="_on_PauseButton_pressed"]
+
+[editable path="Board"]
