@@ -1,13 +1,17 @@
-[gd_scene load_steps=17 format=2]
+[gd_scene load_steps=23 format=2]
 
 [ext_resource path="res://Board.tscn" type="PackedScene" id=1]
 [ext_resource path="res://Player.tscn" type="PackedScene" id=2]
 [ext_resource path="res://ui/UITheme.tres" type="Theme" id=3]
+[ext_resource path="res://ui/you-died.png" type="Texture" id=4]
 [ext_resource path="res://Main.gd" type="Script" id=5]
 [ext_resource path="res://sprites/bee_idle.png" type="Texture" id=6]
 [ext_resource path="res://ui/GUI.gd" type="Script" id=7]
+[ext_resource path="res://ui/grayscale-screen.tres" type="Material" id=8]
 [ext_resource path="res://sprites/bomb.png" type="Texture" id=9]
 [ext_resource path="res://music/getting_over_it.mp3" type="AudioStream" id=10]
+[ext_resource path="res://board2.png" type="Texture" id=11]
+[ext_resource path="res://ui/UIThemeMedium.tres" type="Theme" id=12]
 
 [sub_resource type="AtlasTexture" id=1]
 flags = 4
@@ -54,6 +58,129 @@ animations = [ {
 "name": "default",
 "speed": 5.0
 } ]
+
+[sub_resource type="Animation" id=9]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/path = NodePath("GreyscaleScreen:modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Color( 1, 1, 1, 0 ) ]
+}
+tracks/1/type = "bezier"
+tracks/1/path = NodePath("YouDied:modulate:a")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"points": PoolRealArray( 0, -0.25, 0, 0.25, 0 ),
+"times": PoolRealArray( 0 )
+}
+tracks/2/type = "value"
+tracks/2/path = NodePath("GameOverBox:modulate")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Color( 1, 1, 1, 0 ) ]
+}
+tracks/3/type = "value"
+tracks/3/path = NodePath("GameOverBox:mouse_filter")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ 2 ]
+}
+tracks/4/type = "value"
+tracks/4/path = NodePath("GreyscaleScreen:mouse_filter")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ 2 ]
+}
+
+[sub_resource type="Animation" id=10]
+resource_name = "fadein"
+length = 5.0
+tracks/0/type = "value"
+tracks/0/path = NodePath("GreyscaleScreen:modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.6, 2 ),
+"transitions": PoolRealArray( 1, 1, 1 ),
+"update": 0,
+"values": [ Color( 1, 1, 1, 0 ), Color( 1, 1, 1, 0 ), Color( 0.67451, 0.67451, 0.67451, 1 ) ]
+}
+tracks/1/type = "bezier"
+tracks/1/path = NodePath("YouDied:modulate:a")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"points": PoolRealArray( 0, -0.25, 0, 0.25, 0, 0, -0.25, 0, 0.2, 0.59026, 1, -0.25, 0, 0.25, 0 ),
+"times": PoolRealArray( 0, 2.5, 4 )
+}
+tracks/2/type = "value"
+tracks/2/path = NodePath("GameOverBox:modulate")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"times": PoolRealArray( 0, 3.6, 5 ),
+"transitions": PoolRealArray( 1, 1, 1 ),
+"update": 0,
+"values": [ Color( 1, 1, 1, 0 ), Color( 1, 1, 1, 0 ), Color( 1, 1, 1, 1 ) ]
+}
+tracks/3/type = "value"
+tracks/3/path = NodePath("GameOverBox:mouse_filter")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/keys = {
+"times": PoolRealArray( 0, 3.6 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 1,
+"values": [ 2, 0 ]
+}
+tracks/4/type = "value"
+tracks/4/path = NodePath("GreyscaleScreen:mouse_filter")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/keys = {
+"times": PoolRealArray( 0, 2 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 1,
+"values": [ 2, 1 ]
+}
 
 [node name="Main" type="Node2D"]
 script = ExtResource( 5 )
@@ -182,22 +309,201 @@ playing = true
 [node name="VSplitContainer" type="VSplitContainer" parent="GUI/MarginContainer/VBoxContainer"]
 margin_top = 151.0
 margin_right = 360.0
-margin_bottom = 265.0
+margin_bottom = 212.0
 size_flags_vertical = 3
 
 [node name="StartButton" type="Button" parent="GUI/MarginContainer/VBoxContainer"]
-margin_top = 269.0
+margin_top = 216.0
 margin_right = 360.0
-margin_bottom = 318.0
+margin_bottom = 265.0
 focus_mode = 0
 text = "Start"
 
 [node name="Pause" type="Button" parent="GUI/MarginContainer/VBoxContainer"]
+margin_top = 269.0
+margin_right = 360.0
+margin_bottom = 318.0
+focus_mode = 0
+text = "Pause"
+
+[node name="HighScores" type="Button" parent="GUI/MarginContainer/VBoxContainer"]
 margin_top = 322.0
 margin_right = 360.0
 margin_bottom = 371.0
 focus_mode = 0
-text = "Pause"
+text = "Scores"
+
+[node name="DeathOverlay" type="Node2D" parent="GUI"]
+
+[node name="GreyscaleScreen" type="ColorRect" parent="GUI/DeathOverlay"]
+modulate = Color( 1, 1, 1, 0 )
+material = ExtResource( 8 )
+margin_right = 1200.0
+margin_bottom = 800.0
+mouse_filter = 2
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="YouDied" type="TextureRect" parent="GUI/DeathOverlay"]
+modulate = Color( 1, 1, 1, 0 )
+margin_top = 25.0
+margin_right = 1200.0
+margin_bottom = 825.0
+mouse_filter = 2
+texture = ExtResource( 4 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="GUI/DeathOverlay"]
+pause_mode = 2
+anims/RESET = SubResource( 9 )
+anims/fadein = SubResource( 10 )
+
+[node name="GameOverBox" type="MarginContainer" parent="GUI/DeathOverlay"]
+modulate = Color( 1, 1, 1, 0 )
+margin_left = 357.0
+margin_top = 516.0
+margin_right = 869.0
+margin_bottom = 715.0
+mouse_filter = 2
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="NinePatchRect" type="NinePatchRect" parent="GUI/DeathOverlay/GameOverBox"]
+modulate = Color( 1, 1, 1, 0.901961 )
+margin_right = 512.0
+margin_bottom = 210.0
+rect_min_size = Vector2( 100, 100 )
+texture = ExtResource( 11 )
+region_rect = Rect2( 0, 0, 400, 800 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="MarginContainer" type="MarginContainer" parent="GUI/DeathOverlay/GameOverBox"]
+margin_right = 512.0
+margin_bottom = 210.0
+custom_constants/margin_right = 20
+custom_constants/margin_top = 20
+custom_constants/margin_left = 20
+custom_constants/margin_bottom = 20
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="VBox" type="VBoxContainer" parent="GUI/DeathOverlay/GameOverBox/MarginContainer"]
+margin_left = 20.0
+margin_top = 20.0
+margin_right = 492.0
+margin_bottom = 190.0
+mouse_filter = 0
+theme = ExtResource( 3 )
+custom_constants/separation = 15
+alignment = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="VBoxContainer" type="VBoxContainer" parent="GUI/DeathOverlay/GameOverBox/MarginContainer/VBox"]
+margin_right = 472.0
+margin_bottom = 106.0
+
+[node name="ScoreName" type="LineEdit" parent="GUI/DeathOverlay/GameOverBox/MarginContainer/VBox/VBoxContainer"]
+margin_left = 3.0
+margin_right = 469.0
+margin_bottom = 53.0
+size_flags_horizontal = 4
+expand_to_text_length = true
+placeholder_text = "Name"
+placeholder_alpha = 0.508
+
+[node name="ScoreSubmitButton" type="Button" parent="GUI/DeathOverlay/GameOverBox/MarginContainer/VBox/VBoxContainer"]
+margin_top = 57.0
+margin_right = 472.0
+margin_bottom = 106.0
+size_flags_horizontal = 4
+text = "Submit Score"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Restart" type="Button" parent="GUI/DeathOverlay/GameOverBox/MarginContainer/VBox"]
+margin_left = 95.0
+margin_top = 121.0
+margin_right = 377.0
+margin_bottom = 170.0
+size_flags_horizontal = 4
+text = "Restart"
+
+[node name="HTTPRequestScoreboard" type="HTTPRequest" parent="GUI"]
+
+[node name="Scoreboard" type="MarginContainer" parent="GUI"]
+visible = false
+margin_left = 450.0
+margin_top = 50.0
+margin_right = 850.0
+margin_bottom = 350.0
+rect_min_size = Vector2( 700, 700 )
+theme = ExtResource( 3 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="NinePatchRect" type="NinePatchRect" parent="GUI/Scoreboard"]
+modulate = Color( 1, 1, 1, 0.901961 )
+margin_right = 700.0
+margin_bottom = 700.0
+rect_min_size = Vector2( 100, 100 )
+texture = ExtResource( 11 )
+region_rect = Rect2( 0, 0, 400, 800 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="MarginContainer" type="MarginContainer" parent="GUI/Scoreboard"]
+margin_right = 700.0
+margin_bottom = 700.0
+custom_constants/margin_right = 20
+custom_constants/margin_top = 20
+custom_constants/margin_left = 20
+custom_constants/margin_bottom = 20
+
+[node name="VBoxContainer" type="VBoxContainer" parent="GUI/Scoreboard/MarginContainer"]
+margin_left = 20.0
+margin_top = 20.0
+margin_right = 680.0
+margin_bottom = 680.0
+custom_constants/separation = 40
+
+[node name="HBoxContainer" type="HBoxContainer" parent="GUI/Scoreboard/MarginContainer/VBoxContainer"]
+margin_right = 660.0
+margin_bottom = 49.0
+alignment = 1
+
+[node name="Label" type="Label" parent="GUI/Scoreboard/MarginContainer/VBoxContainer/HBoxContainer"]
+margin_left = 90.0
+margin_top = 3.0
+margin_right = 512.0
+margin_bottom = 46.0
+size_flags_horizontal = 6
+text = "High Scores"
+
+[node name="Close" type="Button" parent="GUI/Scoreboard/MarginContainer/VBoxContainer/HBoxContainer"]
+margin_left = 606.0
+margin_right = 660.0
+margin_bottom = 49.0
+size_flags_horizontal = 8
+text = "X"
+
+[node name="ScoreList" type="VBoxContainer" parent="GUI/Scoreboard/MarginContainer/VBoxContainer"]
+margin_top = 89.0
+margin_right = 660.0
+margin_bottom = 660.0
+size_flags_vertical = 3
+theme = ExtResource( 12 )
 
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
 stream = ExtResource( 10 )
@@ -206,8 +512,14 @@ autoplay = true
 [connection signal="increment_score" from="Board/PlayArea/Pickup" to="GUI" method="_on_Pickup_increment_score"]
 [connection signal="body_entered" from="Player" to="Player" method="_on_Player_body_entered"]
 [connection signal="bombs_changed" from="Player" to="GUI" method="_on_Player_bombs_changed"]
+[connection signal="death" from="Player" to="GUI" method="_on_Player_death"]
 [connection signal="health_changed" from="Player" to="GUI" method="_on_Player_health_changed"]
 [connection signal="pressed" from="GUI/MarginContainer/VBoxContainer/StartButton" to="GUI" method="_on_StartButton_pressed"]
 [connection signal="pressed" from="GUI/MarginContainer/VBoxContainer/Pause" to="GUI" method="_on_PauseButton_pressed"]
+[connection signal="pressed" from="GUI/MarginContainer/VBoxContainer/HighScores" to="GUI" method="_on_HighScores_pressed"]
+[connection signal="pressed" from="GUI/DeathOverlay/GameOverBox/MarginContainer/VBox/VBoxContainer/ScoreSubmitButton" to="GUI" method="_on_ScoreSubmitButton_pressed"]
+[connection signal="pressed" from="GUI/DeathOverlay/GameOverBox/MarginContainer/VBox/Restart" to="GUI" method="_on_DeathRestart_pressed"]
+[connection signal="request_completed" from="GUI/HTTPRequestScoreboard" to="GUI" method="_on_HTTPRequestScoreboard_request_completed"]
+[connection signal="pressed" from="GUI/Scoreboard/MarginContainer/VBoxContainer/HBoxContainer/Close" to="GUI" method="_on_CloseScoreboard_pressed"]
 
 [editable path="Board"]

@@ -15,6 +15,10 @@ run/main_scene="res://Main.tscn"
 boot_splash/image="res://icon.png"
 config/icon="res://icon.png"
 
+[autoload]
+
+Persistent="*res://Persistent.gd"
+
 [display]
 
 window/size/width=1200

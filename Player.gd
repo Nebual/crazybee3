@@ -2,6 +2,7 @@ extends Area2D
 
 signal health_changed
 signal bombs_changed
+signal death
 export var speed = 400  # How fast the player will move (pixels/sec).
 export var health = 3
 export var bombs = 2
@@ -42,7 +43,7 @@ func wrap_around_board():
 	
 func _process(delta):
 	if health <= 0:
-		if Input.is_action_just_pressed("restart"):
+		if Input.is_action_just_pressed("restart") and !Persistent.is_typing():
 			get_tree().reload_current_scene()
 		return
 	if Input.is_action_pressed("ui_right"):
@@ -134,6 +135,7 @@ func death():
 	var sprite = $"Sprite_Bee"
 	sprite.animation = "idle"
 	sprite.flip_v = true
+	emit_signal("death")
 	get_node("Shadow/AnimatedSprite").stop()
 	get_node("Shadow/AnimatedSprite").position.y = -14 #Move shadow underneath our fallen hero
 

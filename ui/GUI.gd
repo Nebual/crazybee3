@@ -3,8 +3,11 @@ extends Node2D
 var score = 0
 
 func _process(delta):
-	if Input.is_action_just_pressed("pause"):
-		toggle_pause(!get_tree().paused)
+	if !Persistent.is_typing():
+		if Input.is_action_just_pressed("pause"):
+			toggle_pause(!get_tree().paused)
+		elif get_tree().paused and Input.is_action_just_pressed("restart"):
+			toggle_pause(false)
 
 
 func _on_Pickup_increment_score(amount):
@@ -36,3 +39,87 @@ func _on_Player_bombs_changed(bombs: int):
 	for amount in range(1,6):
 		var sprite : AnimatedSprite = get_node("MarginContainer/VBoxContainer/Bombs/Bomb" + str(amount))
 		sprite.visible = bombs >= amount
+
+
+func _on_Player_death():
+	var animation_player = $"DeathOverlay/AnimationPlayer"
+	animation_player.play("fadein")
+	$"DeathOverlay/GameOverBox/MarginContainer/VBox/VBoxContainer/ScoreSubmitButton".disabled = false
+	$"DeathOverlay/GameOverBox/MarginContainer/VBox/VBoxContainer/ScoreName".text = Persistent.lastScoreName
+
+
+func _on_DeathRestart_pressed():
+	get_tree().reload_current_scene()
+
+
+
+
+const SCOREBOARDS_BASE_URL = "https://gmanman.nebtown.info/scoreboards/"
+func get_scoreboard_id():
+	if OS.is_debug_build():
+		return "crazybee-testing"
+	return "crazybee-" + str(OS.get_datetime()['year'])
+func submit_highscore(name, score):
+	Persistent.lastScoreName = name
+	var scoreboard_id = get_scoreboard_id()
+	var url = SCOREBOARDS_BASE_URL + scoreboard_id + "/addScore"
+	var query = {
+		"name": name,
+		"score": score,
+	}
+	var headers = ["Content-Type: application/json"]
+	$"HTTPRequestScoreboard".request(url, headers, true, HTTPClient.METHOD_PUT, JSON.print(query))
+
+func _on_ScoreSubmitButton_pressed():
+	var name = $"DeathOverlay/GameOverBox/MarginContainer/VBox/VBoxContainer/ScoreName".text
+	submit_highscore(name, score)
+	$"DeathOverlay/GameOverBox/MarginContainer/VBox/VBoxContainer/ScoreSubmitButton".disabled = true
+
+var score_lines = []
+func populate_scoreboard(scoreboard):
+	# clear old board
+	for score_line in score_lines:
+		score_line.queue_free()
+	score_lines = []
+	
+	var scoreList = $"Scoreboard/MarginContainer/VBoxContainer/ScoreList"
+	var rank = 0
+	for score_record in scoreboard:
+		rank += 1
+		var score_line = HBoxContainer.new()
+		
+		var score_label = Label.new()
+		score_label.text = "%2d: %3d %s" % [rank, score_record['score'], score_record['name'].substr(0, 13)]
+		score_line.add_child(score_label)
+		
+		var time_label = Label.new()
+		time_label.text = score_record['datePST']
+		#time_label.add_font_override("font", font_small)
+		time_label.size_flags_horizontal = time_label.SIZE_EXPAND | time_label.SIZE_SHRINK_END
+		score_line.add_child(time_label)
+		
+		scoreList.add_child(score_line)
+		score_lines.append(score_line)
+
+func _on_HTTPRequestScoreboard_request_completed(result, response_code, headers, body):
+	if response_code == 200:
+		var scoreboard = JSON.parse(body.get_string_from_utf8()).result['scores']
+		populate_scoreboard(scoreboard)
+		$"Scoreboard".visible = true
+	else:
+		print("Scoreboard response: ", result, " ", response_code, ", body: ", body.get_string_from_utf8())
+
+
+func _on_HighScores_pressed():
+	var scoreboard = $"Scoreboard"
+	if scoreboard.visible: # toggle it off
+		scoreboard.visible = false
+	else:
+		var scoreboard_id = get_scoreboard_id()
+		var url = SCOREBOARDS_BASE_URL + scoreboard_id
+		$"HTTPRequestScoreboard".request(url)
+
+
+func _on_CloseScoreboard_pressed():
+	var scoreboard = $"Scoreboard"
+	scoreboard.visible = false
