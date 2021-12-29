@@ -1,10 +1,12 @@
 const express = require('express')
+const cors = require('cors')
 const app = express()
 const port = 4091
 const moment = require('moment-timezone');
 const fs = require('fs/promises');
 
 app.use(express.json());
+app.use(cors());
 
 const scoreboards = {};
   fs.readdir("./scoreboards/").then((files) => {
