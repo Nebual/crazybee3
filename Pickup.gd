@@ -8,13 +8,11 @@ signal increment_score
 var enemy = preload("res://Enemy.tscn")
 
 var main : Node2D
-var sprite: AnimatedSprite
 var anim_player: AnimationPlayer
 var play_area : CollisionShape2D
 var player : Area2D
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	sprite = get_node("AnimatedSprite")
 	anim_player = get_node("AnimationPlayer")
 	main = get_node("/root/Main")
 	play_area = get_node("/root/Main/Board/PlayArea/PlayAreaCollision")
@@ -66,9 +64,8 @@ func _on_Pickup_area_entered(area):
 	if pickup_type == PickupTypes.SCORE:
 		increment_score()
 		relocate()
-		spawn_enemy()
+		call_deferred("spawn_enemy") # by deferring this spawn until we're idle, it avoids a lagspike
 		maybe_spawn_health()
 	elif pickup_type == PickupTypes.HEALTH:
 		area.adjust_health(1)
 		queue_free()
-	# queue_free() # destroy self
