@@ -10,7 +10,7 @@
 [ext_resource path="res://ui/grayscale-screen.tres" type="Material" id=8]
 [ext_resource path="res://sprites/bomb.png" type="Texture" id=9]
 [ext_resource path="res://music/getting_over_it.mp3" type="AudioStream" id=10]
-[ext_resource path="res://board2.png" type="Texture" id=11]
+[ext_resource path="res://ui/board2.png" type="Texture" id=11]
 [ext_resource path="res://ui/UIThemeMedium.tres" type="Theme" id=12]
 
 [sub_resource type="AtlasTexture" id=1]
@@ -219,14 +219,14 @@ custom_constants/separation = 10
 alignment = 1
 
 [node name="Title" type="Label" parent="GUI/MarginContainer/VBoxContainer/ScoreLine"]
-margin_left = 43.0
-margin_right = 265.0
+margin_left = 38.0
+margin_right = 270.0
 margin_bottom = 43.0
 text = "Score:"
 
 [node name="Amount" type="Label" parent="GUI/MarginContainer/VBoxContainer/ScoreLine"]
-margin_left = 275.0
-margin_right = 317.0
+margin_left = 280.0
+margin_right = 322.0
 margin_bottom = 43.0
 text = "0"
 

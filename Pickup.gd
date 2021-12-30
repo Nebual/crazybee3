@@ -6,6 +6,7 @@ export var pickup_type = PickupTypes.SCORE
 signal increment_score
 
 var enemy = preload("res://Enemy.tscn")
+var enemy_frog = preload("res://EnemyFrog.tscn")
 
 var main : Node2D
 var anim_player: AnimationPlayer
@@ -25,16 +26,12 @@ func reset():
 	if pickup_type == PickupTypes.HEALTH:
 		anim_player.play("candy" + str(randi() % 4))
 		position = get_random_pos_far_from_player()
-
-# eg. limit = 0.95 means you'll get a random number between -0.95 and 0.95
-func rand_signed_float(limit):
-	return (randf() * limit * 2) - limit
 	
 func get_random_pos_far_from_player(min_distance: int = 150):
 	var distance = 0
 	var offset
 	while distance < min_distance:
-		offset = Vector2(rand_signed_float(0.8) * play_area.shape.extents.x, rand_signed_float(0.8) * play_area.shape.extents.y)
+		offset = Vector2(Util.rand_signed_float(0.8) * play_area.shape.extents.x, Util.rand_signed_float(0.8) * play_area.shape.extents.y)
 		distance = (player.global_position - play_area.global_position).distance_to(offset)
 	return offset
 
@@ -43,9 +40,8 @@ func relocate():
 	reset()
 
 func spawn_enemy():
-	var new_enemy = enemy.instance()
+	var new_enemy = enemy_frog.instance() if randf() < 0.33 else enemy.instance()
 	new_enemy.position = get_random_pos_far_from_player()
-	new_enemy.linear_velocity = Vector2(rand_signed_float(300), rand_signed_float(200))
 	play_area.add_child(new_enemy)
 
 func maybe_spawn_health(chance: float = 0.25):

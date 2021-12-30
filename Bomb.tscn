@@ -1,8 +1,9 @@
-[gd_scene load_steps=15 format=2]
+[gd_scene load_steps=17 format=2]
 
 [ext_resource path="res://sprites/bomb.png" type="Texture" id=1]
 [ext_resource path="res://Bomb.gd" type="Script" id=2]
-[ext_resource path="res://music/8-Bit-SFX_Explosion-3.tres" type="AudioStream" id=3]
+[ext_resource path="res://music/warning.wav" type="AudioStream" id=3]
+[ext_resource path="res://music/bomb3.wav" type="AudioStream" id=4]
 
 [sub_resource type="AtlasTexture" id=1]
 flags = 4
@@ -57,9 +58,12 @@ animations = [ {
 "speed": 6.0
 } ]
 
+[sub_resource type="Animation" id=12]
+length = 0.001
+
 [sub_resource type="Animation" id=11]
 resource_name = "rolling"
-length = 1.7
+length = 2.6
 tracks/0/type = "value"
 tracks/0/path = NodePath(".:frame")
 tracks/0/interp = 1
@@ -96,17 +100,35 @@ tracks/2/keys = {
 "update": 1,
 "values": [ Vector2( 3, 3 ), Vector2( 6, 6 ) ]
 }
-tracks/3/type = "value"
-tracks/3/path = NodePath("AudioStreamPlayer:playing")
-tracks/3/interp = 0
+tracks/3/type = "audio"
+tracks/3/path = NodePath("AudioStreamPlayer")
+tracks/3/interp = 1
 tracks/3/loop_wrap = true
 tracks/3/imported = false
 tracks/3/enabled = true
 tracks/3/keys = {
-"times": PoolRealArray( 0, 0.3 ),
-"transitions": PoolRealArray( 1, 1 ),
-"update": 1,
-"values": [ false, true ]
+"clips": [ {
+"end_offset": 0.0,
+"start_offset": 0.0,
+"stream": ExtResource( 3 )
+}, {
+"end_offset": 0.0,
+"start_offset": 0.0,
+"stream": ExtResource( 4 )
+} ],
+"times": PoolRealArray( 0, 1 )
+}
+tracks/4/type = "value"
+tracks/4/path = NodePath("AudioStreamPlayer:volume_db")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/keys = {
+"times": PoolRealArray( 0, 1.6, 2.6 ),
+"transitions": PoolRealArray( 1, 1, 1 ),
+"update": 0,
+"values": [ 0.0, 0.0, -80.0 ]
 }
 
 [node name="Bomb" type="AnimatedSprite"]
@@ -117,6 +139,7 @@ script = ExtResource( 2 )
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 autoplay = "rolling"
+anims/RESET = SubResource( 12 )
 anims/rolling = SubResource( 11 )
 
 [node name="Timer" type="Timer" parent="."]
@@ -124,6 +147,6 @@ one_shot = true
 autostart = true
 
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
-stream = ExtResource( 3 )
+stream = ExtResource( 4 )
 
 [connection signal="timeout" from="Timer" to="." method="_on_Timer_timeout"]

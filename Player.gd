@@ -13,6 +13,7 @@ var pickup_scene = preload("res://Pickup.tscn")
 var bomb_scene = preload("res://Bomb.tscn")
 
 var sound_player : AudioStreamPlayer
+var sound_player2 : AudioStreamPlayer
 var play_area: Area2D
 var play_area_collision: CollisionShape2D
 
@@ -20,6 +21,7 @@ var play_area_collision: CollisionShape2D
 func _ready():
 	screen_size = get_viewport_rect().size
 	sound_player = $"SoundPlayer"
+	sound_player2 = $"SoundPlayer2"
 	play_area = get_node("/root/Main/Board/PlayArea")
 	play_area_collision = get_node("/root/Main/Board/PlayArea/PlayAreaCollision")
 
@@ -79,7 +81,8 @@ func _process(delta):
 		bomb.position = global_position - play_area.global_position
 		play_area.add_child(bomb)
 		for ent in get_tree().get_nodes_in_group("bombable"): #Slow all enemies after dropping bomb
-			ent.linear_velocity /= 4
+			if "linear_velocity" in ent:
+				ent.linear_velocity /= 4
 
 	if velocity.x != 0:
 		(get_node("Sprite_Bee") as AnimatedSprite).animation = "right" if velocity.x > 0 else "left"
@@ -104,13 +107,22 @@ func adjust_bombs(amount: int):
 
 
 var death_sound = preload("res://music/death.tres")
-var hurt_sound = preload("res://music/murloc.tres")
+var hurt_sound = preload("res://music/sad.wav")
+var murloc_sound = preload("res://music/murloc.tres")
+var jump_sound = preload("res://music/jump2.wav")
 var jump_state = ""
+
+func play_sound(channel, sound, volume=0, offset=0):
+	var chosen_sound_player = sound_player2 if channel == 2 else sound_player
+	chosen_sound_player.stream = sound
+	chosen_sound_player.volume_db = volume
+	chosen_sound_player.play(offset)
 
 func jump():
 	jump_state = "up"
 	$"JumpTimer1".start()
 	$"JumpTimer2".start()
+	play_sound(1, jump_sound, -20)
 	
 func _on_JumpTimer1_timeout():
 	if jump_state == "up":
@@ -129,8 +141,7 @@ func _on_JumpTimer2_timeout():
 
 func death():
 	adjust_health(-health)
-	sound_player.stream = death_sound
-	sound_player.play()
+	play_sound(1, death_sound)
 	
 	var sprite = $"Sprite_Bee"
 	sprite.animation = "idle"
@@ -146,10 +157,11 @@ func _on_Player_body_entered(body):
 		return
 	if 'damage' in body: # hit a baddie
 		adjust_health(-body.damage)
-		(body as RigidBody2D).queue_free()
+		if body.name == "StaticFrog":
+			play_sound(2, murloc_sound, -5, 0.4)
+		(body as Node2D).queue_free()
 		if health == 0:
 			death()
 		else:
-			sound_player.stream = hurt_sound
-			sound_player.play(0.4)
+			play_sound(1, hurt_sound)
 

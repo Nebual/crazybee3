@@ -18,7 +18,7 @@ func _ready():
 
 func _on_Timer_timeout():
 	for ent in get_tree().get_nodes_in_group("bombable"):
-		if (ent as Node2D).position.distance_to(position) < blast_radius:
+		if (ent as Node2D).global_position.distance_to(global_position) < blast_radius:
 			ent.queue_free()
 		elif "original_velocity" in ent:
 			ent.linear_velocity = ent.original_velocity
