@@ -16,6 +16,7 @@ var sound_player : AudioStreamPlayer
 var sound_player2 : AudioStreamPlayer
 var play_area: Area2D
 var play_area_collision: CollisionShape2D
+var speech: Label
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -24,6 +25,7 @@ func _ready():
 	sound_player2 = $"SoundPlayer2"
 	play_area = get_node("/root/Main/Board/PlayArea")
 	play_area_collision = get_node("/root/Main/Board/PlayArea/PlayAreaCollision")
+	speech = $"Speech"
 
 func wrap_around_board():
 	var playAreaMins = play_area_collision.global_position - play_area_collision.shape.extents
@@ -96,6 +98,8 @@ func _process(delta):
 		
 	if Input.is_action_just_pressed("ui_accept"):
 		jump()
+	
+	display_pressed_numbers()
 
 func adjust_health(amount: int):
 	health = clamp(health + amount, 0, 5)
@@ -105,6 +109,28 @@ func adjust_bombs(amount: int):
 	bombs = clamp(bombs + amount, 0, 5)
 	emit_signal("bombs_changed", bombs)
 
+
+var numbers_queue = []
+func display_pressed_numbers():
+	for i in range(10):
+		if Input.is_key_pressed(KEY_0 + i) or Input.is_key_pressed(KEY_KP_0 + i):
+			var num_recently_pressed = false
+			for pair in numbers_queue:
+				if pair[0] == i and (OS.get_ticks_msec() - pair[1]) < 250:
+					num_recently_pressed = true
+					break
+			if !num_recently_pressed:
+				numbers_queue.append([i, OS.get_ticks_msec()])
+	if len(numbers_queue):
+		speech.text = ""
+		var new_numbers_queue = []
+		for pair in numbers_queue:
+			var num = pair[0]
+			var time = pair[1]
+			if (OS.get_ticks_msec() - time) < 1000:
+				speech.text += str(num)
+				new_numbers_queue.append(pair)
+		numbers_queue = new_numbers_queue
 
 var death_sound = preload("res://music/death.tres")
 var hurt_sound = preload("res://music/sad.wav")
@@ -126,15 +152,15 @@ func jump():
 	
 func _on_JumpTimer1_timeout():
 	if jump_state == "up":
-		$"Sprite_Bee".scale += Vector2(0.03,0.03)
-		$"Sprite_Bee".position.y -= 4
+		$"Sprite_Bee".scale += Vector2(0.06,0.06)
+		$"Sprite_Bee".position.y -= 8
 		$"Shadow/AnimatedSprite".scale -= Vector2(0.05,0.05)
-	elif jump_state == "down" and $"Sprite_Bee".scale > Vector2(1,1):
-		$"Sprite_Bee".scale -= Vector2(0.03,0.03)
-		$"Sprite_Bee".position.y += 4
+	elif jump_state == "down" and $"Sprite_Bee".scale > Vector2(2,2):
+		$"Sprite_Bee".scale -= Vector2(0.06,0.06)
+		$"Sprite_Bee".position.y += 8
 		$"Shadow/AnimatedSprite".scale += Vector2(0.05,0.05)
-	elif $"Sprite_Bee".scale <= Vector2(1,1):
-		$"Sprite_Bee".scale = Vector2(1,1)
+	elif $"Sprite_Bee".scale <= Vector2(2,2):
+		$"Sprite_Bee".scale = Vector2(2,2)
 		jump_state = ""
 func _on_JumpTimer2_timeout():
 	jump_state = "down"

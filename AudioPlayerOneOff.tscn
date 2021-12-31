@@ -1,0 +1,11 @@
+[gd_scene load_steps=2 format=2]
+
+[sub_resource type="GDScript" id=1]
+script/source = "extends AudioStreamPlayer
+
+func _ready():
+	connect(\"finished\", self, \"queue_free\")
+"
+
+[node name="AudioPlayerOneOff" type="AudioStreamPlayer"]
+script = SubResource( 1 )
