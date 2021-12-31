@@ -51,7 +51,15 @@ func relocate():
 	reset()
 
 func spawn_enemy():
-	var new_enemy = enemy_frog.instance() if randf() < 0.33 else enemy.instance()
+	var new_enemy
+	if randf() < 0.33:
+		new_enemy = enemy_frog.instance()
+	else:
+		new_enemy = enemy.instance()
+		if randf() < 0.25:
+			new_enemy.type = "split"
+		else:
+			new_enemy.type = "regular"
 	new_enemy.position = get_random_pos_far_from_player()
 	play_area.add_child(new_enemy)
 
@@ -72,8 +80,8 @@ func _on_Pickup_area_entered(area):
 		increment_score()
 		relocate()
 		call_deferred("spawn_enemy") # by deferring this spawn until we're idle, it avoids a lagspike
+		call_deferred("maybe_spawn_health")
 		Util.play_sound(coin_sound, -20, 0, 1.25)
-		maybe_spawn_health()
 	elif pickup_type == PickupTypes.HEALTH:
 		area.adjust_health(1)
 		Util.play_sound(coin_sound, -10, 0, 0.7)
