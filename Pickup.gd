@@ -7,6 +7,7 @@ signal increment_score
 
 var enemy = preload("res://Enemy.tscn")
 var enemy_frog = preload("res://EnemyFrog.tscn")
+var coin_sound = preload("res://music/coin.wav")
 
 var main : Node2D
 var anim_player: AnimationPlayer
@@ -74,7 +75,9 @@ func _on_Pickup_area_entered(area):
 		increment_score()
 		relocate()
 		call_deferred("spawn_enemy") # by deferring this spawn until we're idle, it avoids a lagspike
+		Util.play_sound(coin_sound, -20, 0, 1.25)
 		maybe_spawn_health()
 	elif pickup_type == PickupTypes.HEALTH:
 		area.adjust_health(1)
+		Util.play_sound(coin_sound, -10, 0, 0.7)
 		queue_free()

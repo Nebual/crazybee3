@@ -36,7 +36,7 @@ func _ready():
 func gen_fraction():
 	var answer = randi() % 8 + 2
 	while true:
-		var denominator = randi() % 50
+		var denominator = randi() % 47 + 1
 		var numerator = answer * denominator
 		if numerator < 100:
 			return [numerator, denominator, answer]
@@ -66,5 +66,5 @@ func _process(delta):
 
 func queue_free():
 	if !muted:
-		Util.play_sound(murloc_sound, 0, 0.4)
+		Util.play_sound(murloc_sound, -5, 0.4)
 	.queue_free()

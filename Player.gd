@@ -183,8 +183,6 @@ func _on_Player_body_entered(body):
 		return
 	if 'damage' in body: # hit a baddie
 		adjust_health(-body.damage)
-		if body.name == "StaticFrog":
-			play_sound(2, murloc_sound, -5, 0.4)
 		(body as Node2D).queue_free()
 		if health == 0:
 			death()
