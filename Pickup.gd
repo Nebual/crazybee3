@@ -41,8 +41,16 @@ func position_too_close(obstacles, min_distance: int, pos: Vector2) -> bool:
 	var player_distance = (player.global_position).distance_to(pos)
 	if player_distance < min_distance:
 		return true
+	var placeholder_shape = CircleShape2D.new()
+	placeholder_shape.radius = 40
+	var placeholder_transform = Transform2D(global_transform)
+	placeholder_transform.origin = pos
 	for ent in obstacles:
-		if ent.global_position.distance_to(pos) < 70:
+		var collision_shape = ent as CollisionShape2D
+		if collision_shape:
+			if collision_shape.shape.collide(collision_shape.global_transform, placeholder_shape, placeholder_transform):
+				return true
+		elif ent.global_position.distance_to(pos) < 70:
 			return true
 	return false
 

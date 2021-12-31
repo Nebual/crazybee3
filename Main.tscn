@@ -510,7 +510,6 @@ stream = ExtResource( 10 )
 autoplay = true
 
 [connection signal="increment_score" from="Board/PlayArea/Pickup" to="GUI" method="_on_Pickup_increment_score"]
-[connection signal="body_entered" from="Player" to="Player" method="_on_Player_body_entered"]
 [connection signal="bombs_changed" from="Player" to="GUI" method="_on_Player_bombs_changed"]
 [connection signal="death" from="Player" to="GUI" method="_on_Player_death"]
 [connection signal="health_changed" from="Player" to="GUI" method="_on_Player_health_changed"]

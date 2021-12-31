@@ -93,15 +93,16 @@ func populate_scoreboard(scoreboard):
 		score_label.text = "%2d: %3d %s" % [rank, score_record['score'], score_record['name'].substr(0, 13)]
 		score_line.add_child(score_label)
 		
-		var time_label = LinkButton.new()
-		time_label.text = score_record['datePST']
-		#time_label.add_font_override("font", font_small)
-		time_label.size_flags_horizontal = time_label.SIZE_EXPAND | time_label.SIZE_SHRINK_END
+		var time_label
 		if 'imageLink' in score_record && score_record['imageLink']:
+			time_label = LinkButton.new()
 			time_label.underline = time_label.UNDERLINE_MODE_ALWAYS
 			time_label.connect("pressed", self, "_on_scoreboard_image_clicked", [score_record['imageLink']])
 		else:
-			time_label.underline = time_label.UNDERLINE_MODE_NEVER
+			time_label = Label.new()
+		time_label.text = score_record['datePST']
+		#time_label.add_font_override("font", font_small)
+		time_label.size_flags_horizontal = time_label.SIZE_EXPAND | time_label.SIZE_SHRINK_END
 		score_line.add_child(time_label)
 		
 		scoreList.add_child(score_line)

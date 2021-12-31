@@ -21,7 +21,7 @@ func _ready():
 	tongue = $"LineTongue"
 	player = $"/root/Main/Player"
 	add_to_group("bombable")
-	add_to_group("obstacles")
+	$"CollisionShape2D".add_to_group("obstacles")
 	ball_template = ball.duplicate()
 	animation_player = $"AnimationPlayer"
 	animation_player.play("default")
