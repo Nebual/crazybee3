@@ -17,6 +17,7 @@ var sound_player2 : AudioStreamPlayer
 var play_area: Area2D
 var play_area_collision: CollisionShape2D
 var speech: Label
+var iframesAnimationPlayer: AnimationPlayer
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -26,6 +27,7 @@ func _ready():
 	play_area = get_node("/root/Main/Board/PlayArea")
 	play_area_collision = get_node("/root/Main/Board/PlayArea/PlayAreaCollision")
 	speech = $"Speech"
+	iframesAnimationPlayer = $"iframesAnimationPlayer"
 
 func wrap_around_board():
 	var playAreaMins = play_area_collision.global_position - play_area_collision.shape.extents
@@ -167,7 +169,7 @@ func _on_JumpTimer2_timeout():
 
 func death():
 	adjust_health(-health)
-	play_sound(1, death_sound)
+	play_sound(1, death_sound, 0 if OS.has_feature("standalone") else -30)
 	
 	var sprite = $"Sprite_Bee"
 	sprite.animation = "idle"
@@ -190,10 +192,13 @@ func _on_Player_body_entered(body):
 	if jump_state != "":
 		return
 	if 'damage' in body: # hit a baddie
+		if iframesAnimationPlayer.is_playing():
+			return
 		adjust_health(-body.damage)
 		(body as Node2D).queue_free()
 		if health == 0:
 			death()
 		else:
+			iframesAnimationPlayer.play("iframes")
 			play_sound(1, hurt_sound)
 
