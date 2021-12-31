@@ -8,6 +8,8 @@ func _ready():
 	randomize() # Randomizes the seed of the random number generator
 	if start_paused:
 		get_tree().paused = true
+	if !OS.has_feature("standalone"):
+		$"AudioStreamPlayer".volume_db = -50
 
 func _process(delta):
 	pass

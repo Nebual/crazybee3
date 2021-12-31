@@ -1,6 +1,7 @@
 extends Node2D
 
 var score = 0
+var has_started = false
 
 func _process(delta):
 	if !Persistent.is_typing():
@@ -21,6 +22,9 @@ func toggle_pause(state: bool):
 	start.disabled = !state
 	var pause: Button = $"MarginContainer/VBoxContainer/Pause"
 	pause.disabled = state
+	if !has_started:
+		has_started = true
+		$"ControlsOverlay/AnimationPlayer".play("fade")
 
 func _on_StartButton_pressed():
 	toggle_pause(false)
