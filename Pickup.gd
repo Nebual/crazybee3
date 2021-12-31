@@ -28,12 +28,25 @@ func reset():
 		position = get_random_pos_far_from_player()
 	
 func get_random_pos_far_from_player(min_distance: int = 150):
-	var distance = 0
+	var obstacles = get_tree().get_nodes_in_group("obstacles")
 	var offset
-	while distance < min_distance:
+	for _i in range(20):
 		offset = Vector2(Util.rand_signed_float(0.8) * play_area.shape.extents.x, Util.rand_signed_float(0.8) * play_area.shape.extents.y)
-		distance = (player.global_position - play_area.global_position).distance_to(offset)
+		if !position_too_close(obstacles, min_distance, offset + play_area.global_position):
+			return offset # passes all checks, good spawn
+	# fallback to _a_ spawn after 20 attempts
 	return offset
+func position_too_close(obstacles, min_distance: int, pos: Vector2) -> bool:
+	var player_distance = (player.global_position).distance_to(pos)
+	if player_distance < min_distance:
+		print("player ", player.global_position, " too close to ", pos)
+		return true
+	for ent in obstacles:
+		if ent.global_position.distance_to(pos) < 70:
+			print("ent ", ent.global_position, " too close to ", pos)
+			return true
+		print("ent ", ent.global_position, " far enough away from ", pos)
+	return false
 
 func relocate():
 	position = get_random_pos_far_from_player() # lets reuse this pickup instead of making a new one
