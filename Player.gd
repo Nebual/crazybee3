@@ -175,6 +175,14 @@ func death():
 	emit_signal("death")
 	get_node("Shadow/AnimatedSprite").stop()
 	get_node("Shadow/AnimatedSprite").position.y = -14 #Move shadow underneath our fallen hero
+	call_deferred("save_death_screenshot")
+
+func save_death_screenshot():
+	#yield(get_tree().create_timer(0.2), "timeout")
+	var image = get_viewport().get_texture().get_data()
+	image.flip_y()
+	image.save_png("last_death.png")
+	Util.last_death_screenshot = image
 
 func _on_Player_body_entered(body):
 	if health <= 0:

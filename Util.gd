@@ -1,5 +1,7 @@
 extends Node
 
+var last_death_screenshot: Image
+
 # eg. limit = 0.95 means you'll get a random number between -0.95 and 0.95
 func rand_signed_float(limit):
 	return (randf() * limit * 2) - limit
@@ -13,3 +15,6 @@ func play_sound(sound, volume=0, offset=0, pitch=1):
 	sound_emitter.pitch_scale = pitch
 	sound_emitter.play(offset)
 	$"/root/Main".add_child(sound_emitter)
+
+func get_last_death_screenshot_data() -> String:
+	return last_death_screenshot.save_png_to_buffer().hex_encode()

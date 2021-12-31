@@ -66,6 +66,7 @@ func submit_highscore(name, score):
 	var query = {
 		"name": name,
 		"score": score,
+		"imageData": Util.get_last_death_screenshot_data(),
 	}
 	var headers = ["Content-Type: application/json"]
 	$"HTTPRequestScoreboard".request(url, headers, true, HTTPClient.METHOD_PUT, JSON.print(query))
@@ -92,10 +93,15 @@ func populate_scoreboard(scoreboard):
 		score_label.text = "%2d: %3d %s" % [rank, score_record['score'], score_record['name'].substr(0, 13)]
 		score_line.add_child(score_label)
 		
-		var time_label = Label.new()
+		var time_label = LinkButton.new()
 		time_label.text = score_record['datePST']
 		#time_label.add_font_override("font", font_small)
 		time_label.size_flags_horizontal = time_label.SIZE_EXPAND | time_label.SIZE_SHRINK_END
+		if 'imageLink' in score_record && score_record['imageLink']:
+			time_label.underline = time_label.UNDERLINE_MODE_ALWAYS
+			time_label.connect("pressed", self, "_on_scoreboard_image_clicked", [score_record['imageLink']])
+		else:
+			time_label.underline = time_label.UNDERLINE_MODE_NEVER
 		score_line.add_child(time_label)
 		
 		scoreList.add_child(score_line)
@@ -109,6 +115,9 @@ func _on_HTTPRequestScoreboard_request_completed(result, response_code, headers,
 	else:
 		print("Scoreboard response: ", result, " ", response_code, ", body: ", body.get_string_from_utf8())
 
+func _on_scoreboard_image_clicked(link):
+	print("Link clicked: ", link)
+	OS.shell_open(link)
 
 func _on_HighScores_pressed():
 	var scoreboard = $"Scoreboard"

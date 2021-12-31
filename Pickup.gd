@@ -40,13 +40,10 @@ func get_random_pos_far_from_player(min_distance: int = 150):
 func position_too_close(obstacles, min_distance: int, pos: Vector2) -> bool:
 	var player_distance = (player.global_position).distance_to(pos)
 	if player_distance < min_distance:
-		print("player ", player.global_position, " too close to ", pos)
 		return true
 	for ent in obstacles:
 		if ent.global_position.distance_to(pos) < 70:
-			print("ent ", ent.global_position, " too close to ", pos)
 			return true
-		print("ent ", ent.global_position, " far enough away from ", pos)
 	return false
 
 func relocate():
