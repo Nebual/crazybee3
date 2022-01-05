@@ -1,5 +1,7 @@
 extends Node2D
 
+signal next_level
+
 var score = 0
 var has_started = false
 
@@ -15,6 +17,8 @@ func _on_Pickup_increment_score(amount):
 	var score_amount = $"MarginContainer/VBoxContainer/ScoreLine/Amount"
 	score += amount
 	score_amount.text = str(score)
+	if score > 0 and score % 30 == 0:
+		emit_signal("next_level")
 
 func toggle_pause(state: bool):
 	get_tree().paused = state

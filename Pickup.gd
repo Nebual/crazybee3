@@ -11,13 +11,15 @@ var coin_sound = preload("res://music/coin.wav")
 
 var main : Node2D
 var anim_player: AnimationPlayer
-var play_area : CollisionShape2D
+var level : Node2D
+var level_collision : CollisionShape2D
 var player : Area2D
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	anim_player = get_node("AnimationPlayer")
 	main = get_node("/root/Main")
-	play_area = get_node("/root/Main/Board/PlayArea/PlayAreaCollision")
+	level = get_node("../") # Level
+	level_collision = get_node("../Collision")
 	player = get_node("/root/Main/Player")
 	reset()
 
@@ -32,8 +34,8 @@ func get_random_pos_far_from_player(min_distance: int = 150):
 	var obstacles = get_tree().get_nodes_in_group("obstacles")
 	var offset
 	for _i in range(20):
-		offset = Vector2(Util.rand_signed_float(0.8) * play_area.shape.extents.x, Util.rand_signed_float(0.8) * play_area.shape.extents.y)
-		if !position_too_close(obstacles, min_distance, offset + play_area.global_position):
+		offset = Vector2(Util.rand_signed_float(0.8) * level_collision.shape.extents.x, Util.rand_signed_float(0.8) * level_collision.shape.extents.y)
+		if !position_too_close(obstacles, min_distance, offset + level_collision.global_position):
 			return offset # passes all checks, good spawn
 	# fallback to _a_ spawn after 20 attempts
 	return offset
@@ -69,14 +71,14 @@ func spawn_enemy():
 		else:
 			new_enemy.type = "regular"
 	new_enemy.position = get_random_pos_far_from_player()
-	play_area.add_child(new_enemy)
+	level.add_child(new_enemy)
 
 func maybe_spawn_health(chance: float = 0.25):
 	if randf() < chance and len(get_tree().get_nodes_in_group("health_pickups")) < 1:
 		var health_pickup = duplicate()
 		health_pickup.pickup_type = PickupTypes.HEALTH
 		health_pickup.add_to_group("health_pickups")
-		play_area.add_child(health_pickup)
+		level.add_child(health_pickup)
 
 func increment_score():
 	emit_signal("increment_score", 1)

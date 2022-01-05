@@ -1,6 +1,6 @@
-[gd_scene load_steps=25 format=2]
+[gd_scene load_steps=29 format=2]
 
-[ext_resource path="res://Board.tscn" type="PackedScene" id=1]
+[ext_resource path="res://Level.tscn" type="PackedScene" id=1]
 [ext_resource path="res://Player.tscn" type="PackedScene" id=2]
 [ext_resource path="res://ui/UITheme.tres" type="Theme" id=3]
 [ext_resource path="res://ui/you-died.png" type="Texture" id=4]
@@ -12,6 +12,12 @@
 [ext_resource path="res://music/getting_over_it.mp3" type="AudioStream" id=10]
 [ext_resource path="res://ui/board2.png" type="Texture" id=11]
 [ext_resource path="res://ui/UIThemeMedium.tres" type="Theme" id=12]
+[ext_resource path="res://sprites/board_border.png" type="Texture" id=13]
+[ext_resource path="res://sprites/menu.png" type="Texture" id=14]
+[ext_resource path="res://EnemyFrog.tscn" type="PackedScene" id=15]
+
+[sub_resource type="RectangleShape2D" id=13]
+extents = Vector2( 368, 368 )
 
 [sub_resource type="AtlasTexture" id=1]
 flags = 4
@@ -212,7 +218,44 @@ tracks/0/keys = {
 [node name="Main" type="Node2D"]
 script = ExtResource( 5 )
 
-[node name="Board" parent="." instance=ExtResource( 1 )]
+[node name="PlayArea" type="StaticBody2D" parent="."]
+position = Vector2( 800, 400 )
+collision_layer = 0
+collision_mask = 0
+
+[node name="PlayAreaCollision" type="CollisionShape2D" parent="PlayArea"]
+shape = SubResource( 13 )
+
+[node name="Level" parent="PlayArea" instance=ExtResource( 1 )]
+
+[node name="Background" parent="PlayArea/Level" index="0"]
+frame = 1
+
+[node name="Level2" parent="PlayArea" instance=ExtResource( 1 )]
+position = Vector2( 800, 0 )
+
+[node name="Background" parent="PlayArea/Level2" index="0"]
+animation = "pond"
+frame = 1
+
+[node name="EnemyFrog" parent="PlayArea/Level2" index="3"]
+position = Vector2( -191, -99 )
+
+[node name="EnemyFrog2" parent="PlayArea/Level2" instance=ExtResource( 15 )]
+position = Vector2( 101, -154 )
+
+[node name="EnemyFrog3" parent="PlayArea/Level2" instance=ExtResource( 15 )]
+position = Vector2( 131, 164 )
+
+[node name="GardenBorder" type="Sprite" parent="."]
+light_mask = 0
+position = Vector2( 800, 400 )
+z_index = 11
+texture = ExtResource( 13 )
+
+[node name="Menu" type="Sprite" parent="GardenBorder"]
+position = Vector2( -600, 0 )
+texture = ExtResource( 14 )
 
 [node name="Player" parent="." instance=ExtResource( 2 )]
 position = Vector2( 800, 400 )
@@ -603,10 +646,12 @@ anims/fade = SubResource( 12 )
 stream = ExtResource( 10 )
 autoplay = true
 
-[connection signal="increment_score" from="Board/PlayArea/Pickup" to="GUI" method="_on_Pickup_increment_score"]
+[connection signal="increment_score" from="PlayArea/Level/Pickup" to="GUI" method="_on_Pickup_increment_score"]
+[connection signal="increment_score" from="PlayArea/Level2/Pickup" to="GUI" method="_on_Pickup_increment_score"]
 [connection signal="bombs_changed" from="Player" to="GUI" method="_on_Player_bombs_changed"]
 [connection signal="death" from="Player" to="GUI" method="_on_Player_death"]
 [connection signal="health_changed" from="Player" to="GUI" method="_on_Player_health_changed"]
+[connection signal="next_level" from="GUI" to="." method="_on_next_level"]
 [connection signal="pressed" from="GUI/MarginContainer/VBoxContainer/StartButton" to="GUI" method="_on_StartButton_pressed"]
 [connection signal="pressed" from="GUI/MarginContainer/VBoxContainer/Pause" to="GUI" method="_on_PauseButton_pressed"]
 [connection signal="pressed" from="GUI/MarginContainer/VBoxContainer/HighScores" to="GUI" method="_on_HighScores_pressed"]
@@ -615,4 +660,5 @@ autoplay = true
 [connection signal="request_completed" from="GUI/HTTPRequestScoreboard" to="GUI" method="_on_HTTPRequestScoreboard_request_completed"]
 [connection signal="pressed" from="GUI/Scoreboard/MarginContainer/VBoxContainer/HBoxContainer/Close" to="GUI" method="_on_CloseScoreboard_pressed"]
 
-[editable path="Board"]
+[editable path="PlayArea/Level"]
+[editable path="PlayArea/Level2"]

@@ -14,7 +14,6 @@ var bomb_scene = preload("res://Bomb.tscn")
 
 var sound_player : AudioStreamPlayer
 var sound_player2 : AudioStreamPlayer
-var play_area: Area2D
 var play_area_collision: CollisionShape2D
 var speech: Label
 var iframesAnimationPlayer: AnimationPlayer
@@ -24,8 +23,7 @@ func _ready():
 	screen_size = get_viewport_rect().size
 	sound_player = $"SoundPlayer"
 	sound_player2 = $"SoundPlayer2"
-	play_area = get_node("/root/Main/Board/PlayArea")
-	play_area_collision = get_node("/root/Main/Board/PlayArea/PlayAreaCollision")
+	play_area_collision = get_node("/root/Main/PlayArea/PlayAreaCollision")
 	speech = $"Speech"
 	iframesAnimationPlayer = $"iframesAnimationPlayer"
 
@@ -47,6 +45,12 @@ func wrap_around_board():
 		#print("warp to top")
 		position.y -= play_area_collision.shape.extents.y*2 + playerSize.y*2
 	
+func _physics_process(delta):
+	if health <= 0:
+		return
+	position += velocity * delta
+	wrap_around_board()
+	
 func _process(delta):
 	if health <= 0:
 		if Input.is_action_just_pressed("restart") and !Persistent.is_typing():
@@ -65,10 +69,8 @@ func _process(delta):
 		get_node("Shadow/AnimatedSprite").play()
 		get_node("Sprite_Bee").play()
 		get_node("Shield/Sprite_Shield").play()
-	position += velocity * delta
-	wrap_around_board()
 	
-	if Input.is_action_just_pressed("ui_cancel"):
+	if OS.is_debug_build() and Input.is_action_just_pressed("ui_cancel"):
 		get_node("Shield").visible = !get_node("Shield").visible
 		
 		if get_node("Shield").collision_layer == 0b100:		#Is Shield on Layer 3?
@@ -80,13 +82,7 @@ func _process(delta):
 		print("Is Visible: ",get_node("Shield").is_visible())
 	
 	if Input.is_action_just_pressed("ui_home") and bombs > 0:
-		adjust_bombs(-1)
-		var bomb = bomb_scene.instance()
-		bomb.position = global_position - play_area.global_position
-		play_area.add_child(bomb)
-		for ent in get_tree().get_nodes_in_group("bombable"): #Slow all enemies after dropping bomb
-			if "linear_velocity" in ent:
-				ent.linear_velocity /= 4
+		bomb()
 
 	if velocity.x != 0:
 		(get_node("Sprite_Bee") as AnimatedSprite).animation = "right" if velocity.x > 0 else "left"
@@ -102,6 +98,16 @@ func _process(delta):
 		jump()
 	
 	display_pressed_numbers()
+
+func bomb():
+	var level = get_tree().get_nodes_in_group("level")[0]
+	adjust_bombs(-1)
+	var bomb = bomb_scene.instance()
+	bomb.position = global_position - level.global_position
+	level.add_child(bomb)
+	for ent in get_tree().get_nodes_in_group("bombable"): #Slow all enemies after dropping bomb
+		if "linear_velocity" in ent:
+			ent.linear_velocity /= 4
 
 func adjust_health(amount: int):
 	health = clamp(health + amount, 0, 5)
