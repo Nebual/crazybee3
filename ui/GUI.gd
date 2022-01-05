@@ -66,7 +66,7 @@ const SCOREBOARDS_BASE_URL = "https://gmanman.nebtown.info/scoreboards/"
 func get_scoreboard_id():
 	if OS.is_debug_build():
 		return "crazybee-testing"
-	return "crazybee-" + str(OS.get_datetime()['year'])
+	return "crazybee-2022"
 func submit_highscore(name, score):
 	Persistent.lastScoreName = name
 	var scoreboard_id = get_scoreboard_id()
